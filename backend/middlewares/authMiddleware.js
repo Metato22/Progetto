@@ -22,11 +22,12 @@ const verifyAccessToken = (req, res, next) => {
         // Il token è valido, aggiungi l'ID dell'utente e il ruolo (se presente nel token) alla richiesta
         req.userId = decoded.userId; // Assicurati che il payload del token contenga userId
         req.userRole = decoded.role; // Se hai un ruolo nel token
+        req.userSubscription = decoded.subscriptionLevel || 'free';
         next();
     });
 };
 
-// Esempio di middleware per verificare un ruolo specifico (se necessario)
+// Middleware per verificare un ruolo specifico (se necessario)
 const verifyRole = (allowedRoles) => {
     return (req, res, next) => {
         if (!req.userRole || !allowedRoles.includes(req.userRole)) {

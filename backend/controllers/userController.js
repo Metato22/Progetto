@@ -1,27 +1,24 @@
 const User = require('../models/User');
-const Category = require('../models/Category');
 
+// Recupera profilo utente incluso abbonamento
 const getProfile = async (req, res) => {
-    const user = await User.findById(req.user.id).select('-passwordHash');
+    const user = await User.findById(req.userId).select('-passwordHash');
     res.json(user);
 };
 
-const subscribeCategory = async (req, res) => {
-    const { categoryId } = req.body;
-    const cat = await Category.findById(categoryId);
-    if (!cat) return res.status(404).json({ message: 'Categoria non trovata' });
+// Upgrade piano abbonamento
+const upgradeSubscription = async (req, res) => {
+    const { level } = req.body;
+    const valid = ['free', 'premium'];
+    if (!valid.includes(level))
+        return res.status(400).json({ message: 'Livello abbonamento non valido' });
 
-    const user = await User.findById(req.user.id);
-    if (!user.subscribedCategories.includes(categoryId)) {
-        user.subscribedCategories.push(categoryId);
-        await user.save();
-    }
-    res.json({ message: 'Iscrizione avvenuta' });
+    const user = await User.findByIdAndUpdate(req.userId,
+        { subscriptionLevel: level },
+        { new: true }
+    ).select('-passwordHash');
+
+    res.json({ message: `Abbonamento aggiornato a ${level}`, subscriptionLevel: user.subscriptionLevel });
 };
 
-const getSubscriptions = async (req, res) => {
-    const user = await User.findById(req.user.id).populate('subscribedCategories');
-    res.json(user.subscribedCategories);
-};
-
-module.exports = { getProfile, subscribeCategory, getSubscriptions };
+module.exports = { getProfile, upgradeSubscription };

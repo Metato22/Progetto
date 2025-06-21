@@ -11,4 +11,7 @@ router.post('subscribe');
 // GET /api/user/subscriptions
 router.get('/subscriptions');
 
+
+router.post('/upgrade', verifyAccessToken, userController.upgradeSubscription);
+
 module.exports = router;
