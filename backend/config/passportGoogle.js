@@ -2,7 +2,7 @@
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 // Importa il modello utente dal database MongoDB
-const User = require('../../models/User'); // ⚠️ Assicurati che il percorso sia corretto
+const User = require('../models/User');
 
 // Esporta una funzione che configura Passport
 module.exports = (passport) => {
