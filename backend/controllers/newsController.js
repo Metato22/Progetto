@@ -1,102 +1,125 @@
-const News = require('../models/News'); // Importa il modello Mongoose della notizia
+const News = require('../models/newsModel');
+const Category = require('../models/categoryModel');
 
-// 📰 Ottiene tutte le notizie accessibili all'utente (homepage)
+// 📰 Ottiene tutte le notizie accessibili all'utente
 const getAllNews = async (req, res) => {
-    const filter = {}; // Filtro per query MongoDB
+    try {
+        const filter = {};
+        const userLevel = req.userSubscription || 'free';
 
-    // Ottiene il livello di abbonamento dell’utente (inserito dal middleware)
-    const userLevel = req.userSubscription || 'free';
+        if (req.query.category) {
+            filter.category = req.query.category;
+        }
 
-    // Se specificata una categoria nella query string, aggiungila al filtro
-    if (req.query.category) {
-        filter.category = req.query.category;
+        filter.accessLevel = userLevel === 'premium' ? { $in: ['free', 'premium'] } : 'free';
+
+        const news = await News.find(filter)
+            .sort({ createdAt: -1 })
+            .select('title imageUrl excerpt category likes dislikes accessLevel createdAt')
+            .lean();
+
+        res.json(news);
+    } catch (err) {
+        console.error("Errore nel caricamento delle notizie:", err.message);
+        res.status(500).json({ message: "Errore interno del server" });
     }
-
-    // Filtra le notizie in base al livello di accesso:
-    // utenti premium vedono tutto, utenti free solo contenuti free
-    filter.accessLevel = userLevel === 'premium' ? { $in: ['free', 'premium'] } : 'free';
-
-    // Cerca nel database le notizie che soddisfano il filtro, ordinate per data
-    const news = await News.find(filter)
-        .sort({ createdAt: -1 })
-        .select('title imageUrl excerpt category likes dislikes accessLevel createdAt') // restituisce solo i campi visibili in anteprima
-        .lean();
-
-    res.json(news); // Ritorna l'elenco
 };
 
-// 📄 Ottiene una notizia completa (pagina di dettaglio)
+// 📄 Ottieni una singola notizia completa
 const getNewsById = async (req, res) => {
-    const news = await News.findById(req.params.id)
-        .populate('comments.user', 'username') // Popola il campo user nei commenti con lo username
-        .populate('author', 'username')
-        .lean();
+    try {
+        const news = await News.findById(req.params.id)
+            .populate('comments.user', 'username')
+            .populate('author', 'username')
+            .lean();
 
-    if (!news) return res.status(404).json({ message: 'Notizia non trovata' });
+        if (!news) return res.status(404).json({ message: 'Notizia non trovata' });
 
-    // Controlla se l'utente ha accesso alla notizia in base al livello richiesto
-    const userLevel = req.userSubscription || 'free';
-    if (news.accessLevel === 'premium' && userLevel !== 'premium') {
-        return res.status(403).json({ message: 'Contenuto riservato agli abbonati premium' });
+        const userLevel = req.userSubscription || 'free';
+        if (news.accessLevel === 'premium' && userLevel !== 'premium') {
+            return res.status(403).json({ message: 'Contenuto riservato agli abbonati premium' });
+        }
+
+        res.json(news);
+    } catch (err) {
+        console.error("Errore nel recupero della notizia:", err.message);
+        res.status(500).json({ message: "Errore del server" });
     }
-
-    res.json(news); // Ritorna il contenuto completo
 };
 
 // 🆕 Crea una nuova notizia (solo admin)
 const createNews = async (req, res) => {
-    const { title, content, category, imageUrl, accessLevel } = req.body;
+    try {
+        const { title, content, category, imageUrl, accessLevel } = req.body;
 
-    // Genera automaticamente un estratto dei primi 200 caratteri del contenuto
-    const excerpt = content.slice(0, 200) + '...';
+        const validCategory = await Category.findOne({ name: category });
+        if (!validCategory) return res.status(400).json({ message: 'Categoria non valida' });
 
-    const newNews = new News({
-        title,
-        content,
-        excerpt,
-        category,
-        imageUrl,
-        accessLevel: accessLevel || 'free', // default: 'free'
-        author: req.userId // aggiunto dal middleware di autenticazione
-    });
+        const excerpt = content.slice(0, 200) + '...';
 
-    await newNews.save(); // Salva nel DB
+        const newNews = new News({
+            title,
+            content,
+            excerpt,
+            category,
+            imageUrl,
+            accessLevel: accessLevel || 'free',
+            author: req.userId
+        });
 
-    req.io.emit('news-update', newNews); // Invia aggiornamento in tempo reale a tutti i client connessi via WebSocket
+        await newNews.save();
+        req.io.emit('news-update', newNews);
 
-    res.status(201).json(newNews); // Risposta con notizia appena creata
+        res.status(201).json(newNews);
+    } catch (err) {
+        console.error('Errore creazione notizia:', err.message);
+        res.status(500).json({ message: 'Errore durante la creazione della notizia' });
+    }
 };
 
-// ✏️ Modifica una notizia esistente (solo admin)
+// ✏️ Modifica notizia (solo admin)
 const updateNews = async (req, res) => {
-    const updated = await News.findByIdAndUpdate(req.params.id, req.body, { new: true }); // aggiorna e restituisce la nuova versione
+    try {
+        const forbiddenFields = ['author', 'likes', 'dislikes', 'comments'];
+        forbiddenFields.forEach(field => delete req.body[field]);
 
-    if (!updated) return res.status(404).json({ message: 'Notizia non trovata' });
+        const updated = await News.findByIdAndUpdate(req.params.id, updateData, { new: true });
 
-    req.io.emit('news-update', updated); // invia aggiornamento ai client
-    res.json(updated);
+        if (!updated) return res.status(404).json({ message: 'Notizia non trovata' });
+
+        req.io.emit('news-update', updated);
+        res.json(updated);
+    } catch (err) {
+        console.error('Errore aggiornamento notizia:', err.message);
+        res.status(500).json({ message: 'Errore durante l\'aggiornamento' });
+    }
 };
 
-// ❌ Elimina una notizia (solo admin)
+// ❌ Elimina notizia (solo admin)
 const deleteNews = async (req, res) => {
-    const deleted = await News.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ message: 'Notizia non trovata' });
+    try {
+        const deleted = await News.findByIdAndDelete(req.params.id);
+        if (!deleted) return res.status(404).json({ message: 'Notizia non trovata' });
 
-    req.io.emit('news-deleted', { id: req.params.id }); // invia evento di eliminazione
-    res.json({ message: 'Notizia eliminata' });
+        req.io.emit('news-deleted', { id: req.params.id });
+        res.json({ message: 'Notizia eliminata' });
+    } catch (err) {
+        console.error('Errore eliminazione notizia:', err.message);
+        res.status(500).json({ message: 'Errore del server' });
+    }
 };
 
-// 👍 Aggiunge un like alla notizia (utente loggato)
+// 👍 Aggiunge un like
 const likeNews = async (req, res) => {
     const news = await News.findByIdAndUpdate(
         req.params.id,
-        { $inc: { likes: 1 } }, // incremento del campo likes
+        { $inc: { likes: 1 } },
         { new: true }
     );
-    res.json({ likes: news.likes }); // ritorna il numero aggiornato di likes
+    res.json({ likes: news.likes });
 };
 
-// 👎 Aggiunge un dislike alla notizia (utente loggato)
+// 👎 Aggiunge un dislike
 const dislikeNews = async (req, res) => {
     const news = await News.findByIdAndUpdate(
         req.params.id,
@@ -106,26 +129,26 @@ const dislikeNews = async (req, res) => {
     res.json({ dislikes: news.dislikes });
 };
 
-// 💬 Aggiunge un commento (utente loggato)
+// 💬 Aggiunge un commento
 const commentNews = async (req, res) => {
     const { text } = req.body;
-
     const comment = {
-        user: req.userId, // ID dell'utente loggato
+        user: req.userId,
         text,
         createdAt: new Date()
     };
 
     const news = await News.findByIdAndUpdate(
         req.params.id,
-        { $push: { comments: comment } }, // aggiunge il commento all'array
+        { $push: { comments: comment } },
         { new: true }
-    ).populate('comments.user', 'username'); // restituisce il commento con lo username
+    ).populate('comments.user', 'username');
 
-    res.status(201).json(news.comments); // ritorna tutti i commenti aggiornati
+    req.io.emit('comment-added', { newsId: req.params.id, comment });
+
+    res.status(201).json(news.comments);
 };
 
-// 📦 Esportazione di tutte le funzioni per uso nel router
 module.exports = {
     getAllNews,
     getNewsById,

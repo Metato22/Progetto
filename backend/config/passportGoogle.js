@@ -2,66 +2,75 @@
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 // Importa il modello utente dal database MongoDB
-const User = require('../models/User');
+const User = require('../models/userModel');
+
+// Funzione di utilità per generare uno username basato sull'email
+const generateUsernameFromEmail = (email) => {
+    const base = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, ''); // Rimuove simboli
+    const random = Math.floor(1000 + Math.random() * 9000); // Aggiunge 4 cifre casuali
+    return `${base}${random}`;
+};
 
 // Esporta una funzione che configura Passport
 module.exports = (passport) => {
-    // Configura la strategia di autenticazione "google"
+    // Configura la strategia di autenticazione Google
     passport.use(new GoogleStrategy(
         {
-            // ✅ Questi dati li ottieni da Google Cloud Console (OAuth credentials)
-            clientID: process.env.GOOGLE_CLIENT_ID,         // ID cliente Google
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET, // Secret Google
-            callbackURL: '/api/auth/google/callback'        // Dove Google reindirizza dopo login
+            clientID: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            callbackURL: '/api/auth/google/callback'
         },
 
-        // Questa è la funzione che viene chiamata dopo che l'utente si autentica con Google
         async (accessToken, refreshToken, profile, done) => {
             try {
-                // Cerca nel DB un utente già registrato con googleId
-                let user = await User.findOne({ googleId: profile.id });
+                const googleId = profile.id;
+                const email = profile.emails?.[0]?.value;
+
+                // Se manca l'email (improbabile ma possibile)
+                if (!email) {
+                    return done(new Error('Email non disponibile da Google'), null);
+                }
+
+                // Cerca utente esistente con stesso Google ID
+                let user = await User.findOne({ googleId });
 
                 if (!user) {
-                    // Se non esiste, crea un nuovo utente usando i dati del profilo Google
-
-                    // Assegna ruolo in base all'email (admin se dominio specifico)
-                    const email = profile.emails[0].value;
+                    // Assegna ruolo: admin se dominio è @studenti.poliba.it o email è specifica
                     const isAdmin = email.endsWith('@studenti.poliba.it') || email === 'admin@news.it';
 
+                    // Crea nuovo utente con username generato automaticamente
                     user = await User.create({
-                        googleId: profile.id,
-                        username: profile.displayName,
+                        googleId,
                         email,
-                        role: isAdmin ? 'admin' : 'user', // 👈 qui assegni dinamicamente
+                        username: generateUsernameFromEmail(email),
+                        role: isAdmin ? 'admin' : 'user',
                         subscriptionLevel: 'free'
                     });
 
+                    console.log(`🆕 Nuovo utente creato via Google: ${user.username} (${user.role})`);
                 }
 
-                // Passa l'utente a Passport (login completato)
+                // Passa l'utente a Passport
                 return done(null, user);
             } catch (err) {
-                // In caso di errore durante la ricerca/creazione
+                console.error('Errore durante il login con Google:', err);
                 return done(err, null);
             }
         }
     ));
 
-    // 🔐 Serializza l’utente nella sessione (serve solo durante il redirect Google → server)
+    // Salva solo l'ID nella sessione temporanea (richiesto per Google OAuth)
     passport.serializeUser((user, done) => {
-        // Salva solo l'ID nella sessione
         done(null, user._id);
     });
 
-    // 🔓 Deserializza: prende l'ID salvato nella sessione e recupera l'oggetto utente completo
+    // Recupera l'utente completo dal DB tramite ID
     passport.deserializeUser(async (id, done) => {
         try {
-            // Cerca l'utente nel DB tramite ID
             const user = await User.findById(id);
-            // Passa l'utente a Passport
             done(null, user);
         } catch (err) {
-            done(err, null); // In caso di errore
+            done(err, null);
         }
     });
 };

@@ -1,11 +1,21 @@
-// routes/categoryRoutes.js
 const express = require('express');
 const router = express.Router();
 
-// GET /api/categories
-router.get('/');
+// Controller delle categorie
+const categoryController = require('../controllers/categoryController');
 
-// POST /api/categories
-router.post('/');
+// Middleware per accesso
+const { verifyAccessToken, verifyRole } = require('../middlewares/authMiddleware');
+
+// ✅ Recupera tutte le categorie
+router.get('/', categoryController.getAllCategories);
+
+// ✅ Crea una nuova categoria (solo admin)
+router.post(
+    '/',
+    verifyAccessToken,
+    verifyRole('admin'),
+    categoryController.createCategory
+);
 
 module.exports = router;
