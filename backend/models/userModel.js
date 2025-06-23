@@ -40,7 +40,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ['free', 'premium'],
         default: 'free'
-    }
+    },
+
+    subscribedCategories: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
+    }]
 
 }, { timestamps: true });
 

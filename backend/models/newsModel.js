@@ -1,24 +1,5 @@
 const mongoose = require('mongoose');
 
-const commentSchema = new mongoose.Schema({
-
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-
-    text: {
-        type: String,
-        required: true
-    },
-
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
-});
-
 const newsSchema = new mongoose.Schema({
 
     title: {
@@ -31,16 +12,13 @@ const newsSchema = new mongoose.Schema({
         required: true
     },
 
-    excerpt: {
-        type: String
-    },
-
     imageUrl: {
         type: String
     },
 
     category: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
         required: true
     },
 
@@ -58,16 +36,26 @@ const newsSchema = new mongoose.Schema({
 
     likes: {
         type: Number,
-        default: 0
+        default: 0,
+        min: 0
     },
 
     dislikes: {
         type: Number,
-        default: 0
-    },
+        default: 0,
+        min: 0
+    }
 
-    comments: [commentSchema],
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
-}, { timestamps: true });
+// Aggiungi campo virtuale "excerpt"
+newsSchema.virtual('excerpt').get(function () {
+    if (!this.content) return '';
+    return this.content.length > 200 ? this.content.slice(0, 200) + '...' : this.content;
+});
+
+// Indici
+newsSchema.index({ createdAt: -1 });
+newsSchema.index({ category: 1 });
 
 module.exports = mongoose.model('News', newsSchema);
