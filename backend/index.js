@@ -10,7 +10,7 @@ const passport = require('passport');
 const { Server } = require('socket.io');
 
 // Importa le strategie OAuth (Google)
-require('./config/passport/google')(passport);
+require('./config/passportGoogle')(passport);
 
 // importiamo i router per gestire le richieste di autenticazione, gestione utenti, notizie,
 // consultazione notizie, gestione categorie
