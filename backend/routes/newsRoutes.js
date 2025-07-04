@@ -4,6 +4,9 @@ const router = express.Router();
 // Controller delle notizie
 const newsController = require('../controllers/newsController');
 
+// Controller dei commenti
+const commentController = require('../controllers/commentController');
+
 // Middleware per protezione delle rotte
 const { verifyAccessToken, verifyRole } = require('../middlewares/authMiddleware');
 
@@ -55,7 +58,7 @@ router.post(
 router.post(
     '/:id/comment',
     verifyAccessToken,
-    newsController.commentNews
+    commentController.commentNews
 );
 
 module.exports = router;

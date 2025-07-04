@@ -8,7 +8,7 @@ const categoryController = require('../controllers/categoryController');
 const { verifyAccessToken, verifyRole } = require('../middlewares/authMiddleware');
 
 // ✅ Recupera tutte le categorie
-router.get('/', categoryController.getAllCategories);
+router.get('/', categoryController.getCategories);
 
 // ✅ Crea una nuova categoria (solo admin)
 router.post(
