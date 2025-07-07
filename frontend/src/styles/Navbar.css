@@ -1,0 +1,60 @@
+/* Navbar principale */
+.navbar {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.navbar-brand h1 {
+    font-size: 1.5rem;
+    margin: 0;
+    font-weight: bold;
+    color: #202124;
+}
+
+/* Link principali */
+.nav-link {
+    color: #202124 !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.2s ease;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+    background-color: #f1f3f4;
+    border-radius: 4px;
+}
+
+/* Dropdown */
+.navbar .dropdown-menu {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    min-width: 220px;
+    font-size: 0.95rem;
+    padding: 0.5rem 0;
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    color: #202124;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f1f3f4;
+}
+
+/* Responsive toggle icon spacing */
+.navbar-toggler {
+    border: none;
+}
+
+/* Utility */
+@media (max-width: 768px) {
+    .navbar-collapse {
+        background-color: white;
+        padding: 1rem;
+    }
+}

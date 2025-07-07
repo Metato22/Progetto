@@ -1,0 +1,18 @@
+.news-container {
+    padding: 2rem;
+    background-color: #f8f9fa;
+}
+
+.section-title {
+    text-align: left;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+}

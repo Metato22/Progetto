@@ -1,6 +1,6 @@
 
 import * as React from 'react';
-import './Style.css';
+import '../frontend/src/styles/HomePage.css';
 import BasicGrid from './BasicGrid';
 import SimpleContainer from './SimpleContainer';
 

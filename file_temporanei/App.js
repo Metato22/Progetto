@@ -1,5 +1,5 @@
 import NavBar from "./Navbar";
-import './App.css';
+import '../frontend/src/styles/App.css';
 import Contacts from "./Contacts";
 import Homepage from "./Homepage";
 import Home from "./Home";
