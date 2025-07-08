@@ -59,7 +59,7 @@ export default function BasicGrid() {
             <Grid container rowSpacing={0.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                 <Grid size={8}>
                     <Item>
-                        <h1 className="section-title">Scelti per te</h1>
+                        <h1 className="section-title">Notizie principali</h1>
                         <Grid size={12}>
                             <Item>1</Item>
                         </Grid>
