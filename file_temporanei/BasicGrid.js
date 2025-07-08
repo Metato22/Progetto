@@ -13,7 +13,7 @@ import Grid from '@mui/material/Grid';
 
 
 const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: 'darkgrey',
+    backgroundColor: '#424242',
     ...theme.typography.body2,
     padding: theme.spacing(1),
     textAlign: 'center',
