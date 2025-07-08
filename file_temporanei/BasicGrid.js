@@ -55,7 +55,7 @@ export default function BasicGrid() {
         }
     ];
     return (
-        <Box sx={{ width: '100%', marginTop: '50px' }}>
+        <Box sx={{ width: '100%', marginTop: '50px', padding: '20px' }}>
             <Grid container rowSpacing={0.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                 <Grid size={8}>
                     <Item>
