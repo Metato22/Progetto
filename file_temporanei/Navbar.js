@@ -50,18 +50,21 @@ function NavBar() {
                                 fontSize: '1.1rem' /* Dimensione leggermente aumentata */
                             }}
                         /></Link>
-                        <div className="dropdown">
-                            <button className="category-btn dropdown-toggle" data-bs-toggle="dropdown">
-                                Categorie
-                            </button>
-                            <ul className="dropdown-menu">
-                                <li><Link className="dropdown-item" to="/attualita">Attualità</Link></li>
-                                <li><Link className="dropdown-item" to="/sport">Sport</Link></li>
-                                <li><Link className="dropdown-item" to="/tecnologia">Tecnologia</Link></li>
-                                <li><Link className="dropdown-item" to="/salute">Salute</Link></li>
-                                <li><Link className="dropdown-item" to="/intrattenimento">Intrattenimento</Link></li>
-                            </ul>
-                        </div>
+                        <NavDropdown title="Categorie" id="categories-dropdown">
+                            {categories.length === 0 ? (
+                                <NavDropdown.Item disabled>Caricamento...</NavDropdown.Item>
+                            ) : (
+                                categories.map(c => (
+                                    <NavDropdown.Item
+                                        key={c._id}
+                                        as={Link}
+                                        to={`/category/${c.slug || c.name.toLowerCase()}`}
+                                    >
+                                        {c.name}
+                                    </NavDropdown.Item>
+                                ))
+                            )}
+                        </NavDropdown>
                         <Link to="/StaiSeguendo" className="category-btn">Stai seguendo</Link>
                         <Link to="/Italy" className="category-btn">Italia</Link>
                         <Link to="/World" className="category-btn">Dal Mondo</Link>
