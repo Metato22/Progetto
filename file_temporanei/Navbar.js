@@ -31,6 +31,11 @@ function NavBar() {
                             Contacts
                         </Link>
                     </div>
+                    <div className="d-flex">
+                        <Link to="/login" className="btn btn-outline-light">
+                            Login
+                        </Link>
+                    </div>
                 </div>
             </nav>
 
