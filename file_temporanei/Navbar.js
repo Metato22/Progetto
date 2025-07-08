@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../frontend/src/styles/Navbar.css';
+import './Navbar.css';
 import HomeIcon from '@mui/icons-material/Home';
 
 
