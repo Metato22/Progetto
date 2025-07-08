@@ -21,14 +21,13 @@ function NavBar() {
                                 placeholder="Search"
                                 aria-label="Search"
                             />
-                            <button className="btn btn-outline-primary ms-2" type="submit">
+                            <button className="btn btn-outline-light ms-2" type="submit">
                                 Search
                             </button>
                         </form>
                     </div>
-
                     <div className="d-flex">
-                        <Link to="/contacts" className="btn btn-outline-dark">
+                        <Link to="/contacts" className="btn btn-outline-light">
                             Contacts
                         </Link>
                     </div>

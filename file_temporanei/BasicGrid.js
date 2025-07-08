@@ -5,6 +5,7 @@ import Paper from '@mui/material/Paper';
 import Container from '@mui/material/Container';
 import Cards from './Cards'
 import Typography from "@mui/material/Typography";
+import Grid from '@mui/material/Grid';
 
 
 
@@ -12,7 +13,7 @@ import Typography from "@mui/material/Typography";
 
 
 const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#fff',
+    backgroundColor: 'darkgrey',
     ...theme.typography.body2,
     padding: theme.spacing(1),
     textAlign: 'center',
@@ -54,26 +55,54 @@ export default function BasicGrid() {
         }
     ];
     return (
-        <Container maxWidth="md" className="news-container">
-            <h1 className="section-title">Scelti per te</h1>
-
-            <div className="news-grid">
-                {newsData.map((item) => (
-                    <Cards
-                        key={item.id}
-                        title={item.title}
-                        imageUrl={item.imageUrl}
-                        description={
-                            <>
-                                <span className="card-source">{item.source}</span>
-                                <span className="card-meta">{item.meta}</span>
-                            </>
-                        }
-                        altText={item.source}
-                    />
-                ))}
-            </div>
-        </Container>
+        <Box sx={{ width: '100%', marginTop: '50px' }}>
+            <Grid container rowSpacing={0.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                <Grid size={8}>
+                    <Item>
+                        <h1 className="section-title">Scelti per te</h1>
+                        <Grid size={12}>
+                            <Item>1</Item>
+                        </Grid>
+                        <Grid size={12}>
+                            <Item>2</Item>
+                        </Grid>
+                        <Grid size={12}>
+                            <Item>3</Item>
+                        </Grid>
+                        <Grid size={12}>
+                            <Item>1</Item>
+                        </Grid>
+                        <Grid size={12}>
+                            <Item>2</Item>
+                        </Grid>
+                        <Grid size={12}>
+                            <Item>3</Item>
+                        </Grid>
+                    </Item>
+                </Grid>
+                <Grid size={4}>
+                    <Item>
+                        <Box sx={{ width: '100%', flexGrow:'column', }}>
+                            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                                <h1 className="section-title">Scelti per te</h1>
+                                <Grid size={12}>
+                                    <Item>1</Item>
+                                </Grid>
+                                <Grid size={12}>
+                                    <Item>2</Item>
+                                </Grid>
+                                <Grid size={12}>
+                                    <Item>3</Item>
+                                </Grid>
+                                <Grid size={12}>
+                                    <Item>4</Item>
+                                </Grid>
+                            </Grid>
+                        </Box>
+                    </Item>
+                </Grid>
+            </Grid>
+        </Box>
     );
 }
 
