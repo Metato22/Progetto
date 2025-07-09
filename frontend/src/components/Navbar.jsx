@@ -143,7 +143,7 @@ export default function AppNavbar() {
                             />
                             Stai seguendo
                         </Link>
-                        <Link to="/Italy" className="category-btn">
+                        <Link to="/Italia" className="category-btn">
                             <FlagIcon
                                 fontSize="small"
                                 className="me-2"
@@ -154,7 +154,7 @@ export default function AppNavbar() {
                             />
                             Italia
                         </Link>
-                        <Link to="/World" className="category-btn">
+                        <Link to="/DalMondo" className="category-btn">
                             <PublicIcon
                                 fontSize="small"
                                 className="me-2"

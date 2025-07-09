@@ -10,6 +10,8 @@ import Sport from './pages/Sport';
 import Tecnologia from './pages/Tecnologia';
 import Salute from './pages/Salute';
 import Intrattenimento from './pages/Intrattenimento';
+import Italia from './pages/Italia';
+import DalMondo from './pages/DalMondo';
 import StaiSeguendo from './pages/StaiSeguendo';
 import RegisterPage from './pages/RegisterPage';
 //import ProfilePage from './pages/ProfilePage';
@@ -46,6 +48,8 @@ export default function App() {
                             <Route path="/salute" element={<Salute />} />
                             <Route path="/intrattenimento" element={<Intrattenimento />} />
                             <Route path="/staiseguendo" element={<StaiSeguendo />} />
+                            <Route path="/italia" element={<Italia />} />
+                            <Route path="/dalmondo" element={<DalMondo />} />
                         </Routes>
                     </header>
                 </div>
