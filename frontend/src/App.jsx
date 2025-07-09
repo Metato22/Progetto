@@ -13,6 +13,7 @@ import Intrattenimento from './pages/Intrattenimento';
 import Italia from './pages/Italia';
 import DalMondo from './pages/DalMondo';
 import StaiSeguendo from './pages/StaiSeguendo';
+import Contacts from './pages/Contacts';
 import RegisterPage from './pages/RegisterPage';
 //import ProfilePage from './pages/ProfilePage';
 //import AdminPanel from './pages/AdminPanel';
@@ -50,6 +51,7 @@ export default function App() {
                             <Route path="/staiseguendo" element={<StaiSeguendo />} />
                             <Route path="/italia" element={<Italia />} />
                             <Route path="/dalmondo" element={<DalMondo />} />
+                            <Route path="/contacts" element={<Contacts />} />
                         </Routes>
                     </header>
                 </div>

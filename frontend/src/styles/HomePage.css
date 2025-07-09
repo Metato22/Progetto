@@ -3,14 +3,24 @@
     background-color: #f8f9fa;
 }
 
+.section-title0 {
+    margin-left: 20px;
+    margin-top: 15px;
+    text-align: left;
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: black;
+}
 .section-title {
+   padding-bottom: 3px;
     margin-left: 27px;
-    margin-top: 30px;
+    margin-top: 15px;
     text-align: left;
     font-size: 2rem;
     font-weight: 600;
     margin-bottom: 1.5rem;
-    color: white;
+    color: blanchedalmond;
 }
 
 .news-grid {
