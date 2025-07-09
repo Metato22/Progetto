@@ -10,6 +10,8 @@ import * as React from "react";
 import {styled} from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import '../styles/PagesStyles.css'
+
+
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#424242',
     ...theme.typography.body2,
@@ -21,7 +23,7 @@ const Item = styled(Paper)(({ theme }) => ({
     }),
 }));
 
-export default function StaiSeguendo() {
+export default function Tecnologia() {
     const [news, setNews] = useState(null);
 
     useEffect(() => {
@@ -55,7 +57,7 @@ export default function StaiSeguendo() {
                         <Grid size={12}>
                             <Item>
                                 <div className="header-container">
-                                    <h1 className="section-title2">Stai Seguendo</h1>
+                                    <h1 className="section-title2">Tecnologia</h1>
                                     <button type="button" className="btn special-outline-light btn-lg">
                                         Segui
                                     </button>

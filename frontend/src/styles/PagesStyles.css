@@ -38,3 +38,9 @@
     font-weight: 600;
     color: white;
 }
+
+.special-outline-light.followed {
+    background-color: white !important;
+    color: black !important;
+    border-radius: 8px;
+}

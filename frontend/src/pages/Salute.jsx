@@ -11,6 +11,7 @@ import {styled} from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import '../styles/PagesStyles.css'
 
+
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#424242',
     ...theme.typography.body2,
@@ -46,29 +47,30 @@ export default function Salute() {
             }])
     }, []);
 
-    return (
-        <Container>
-            {!news ? (
-                <Spinner animation="border"/>
-            ) : (
-                <Box sx={{width: '100%', marginTop: '50px', padding: '20px', }}>
-                    <Grid container rowSpacing={0.5} columnSpacing={{xs: 1, sm: 2, md: 3}}>
-                        <Grid size={12}>
-                            <Item>
-                                <div className="header-container">
-                                    <h1 className="section-title2">Salute</h1>
-                                    <button type="button" className="btn special-outline-light btn-lg">
-                                        Segui
-                                    </button>
-                                </div>
-                                <Grid size={12}>
-                                    {news.map(n => <NewsCard key={n._id} news={n}/>)}
-                                </Grid>
-                            </Item>
+
+        return (
+            <Container>
+                {!news ? (
+                    <Spinner animation="border"/>
+                ) : (
+                    <Box sx={{width: '100%', marginTop: '50px', padding: '20px',}}>
+                        <Grid container rowSpacing={0.5} columnSpacing={{xs: 1, sm: 2, md: 3}}>
+                            <Grid size={12}>
+                                <Item>
+                                    <div className="header-container">
+                                        <h1 className="section-title2">Salute</h1>
+                                        <button type="button" className="btn special-outline-light btn-lg">
+                                            Segui
+                                        </button>
+                                    </div>
+                                    <Grid size={12}>
+                                        {news.map(n => <NewsCard key={n._id} news={n}/>)}
+                                    </Grid>
+                                </Item>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </Box>
-            )}
-        </Container>
-    );
-}
+                    </Box>
+                )}
+            </Container>
+        );
+    }
