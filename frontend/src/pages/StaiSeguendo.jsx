@@ -57,7 +57,7 @@ export default function StaiSeguendo() {
                         <Grid size={12}>
                             <Item>
                                 <div className="header-container">
-                                    <h1 className="section-title3">DA MODIFICARE</h1>
+                                    <h1 className="section-title2">DA MODIFICARE</h1>
                                 </div>
                                 <Grid size={12}>
                                     {news.map(n => <NewsCard key={n._id} news={n}/>)}
