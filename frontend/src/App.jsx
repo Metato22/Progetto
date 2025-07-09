@@ -10,6 +10,7 @@ import Sport from './pages/Sport';
 import Tecnologia from './pages/Tecnologia';
 import Salute from './pages/Salute';
 import Intrattenimento from './pages/Intrattenimento';
+import StaiSeguendo from './pages/StaiSeguendo';
 import RegisterPage from './pages/RegisterPage';
 //import ProfilePage from './pages/ProfilePage';
 //import AdminPanel from './pages/AdminPanel';
@@ -44,6 +45,7 @@ export default function App() {
                             <Route path="/tecnologia" element={<Tecnologia />} />
                             <Route path="/salute" element={<Salute />} />
                             <Route path="/intrattenimento" element={<Intrattenimento />} />
+                            <Route path="/staiseguendo" element={<StaiSeguendo />} />
                         </Routes>
                     </header>
                 </div>
