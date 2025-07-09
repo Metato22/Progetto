@@ -57,10 +57,7 @@ export default function Tecnologia() {
                         <Grid size={12}>
                             <Item>
                                 <div className="header-container">
-                                    <h1 className="section-title2">Tecnologia</h1>
-                                    <button type="button" className="btn special-outline-light btn-lg">
-                                        Segui
-                                    </button>
+                                    <h1 className="section-title2">DA MODIFICARE</h1>
                                 </div>
                                 <Grid size={12}>
                                     {news.map(n => <NewsCard key={n._id} news={n}/>)}
