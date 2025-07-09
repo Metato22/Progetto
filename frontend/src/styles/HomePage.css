@@ -4,14 +4,17 @@
 }
 
 .section-title {
+    margin-left: 27px;
+    margin-top: 30px;
     text-align: left;
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 600;
     margin-bottom: 1.5rem;
     color: white;
 }
 
 .news-grid {
+    padding-bottom: 5px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 1.5rem;

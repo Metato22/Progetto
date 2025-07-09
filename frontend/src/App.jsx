@@ -5,6 +5,11 @@ import AppNavbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import NewsPage from './pages/NewsPage';
 import LoginPage from './pages/LoginPage';
+import Attualita from './pages/Attualita';
+import Sport from './pages/Sport';
+import Tecnologia from './pages/Tecnologia';
+import Salute from './pages/Salute';
+import Intrattenimento from './pages/Intrattenimento';
 import RegisterPage from './pages/RegisterPage';
 //import ProfilePage from './pages/ProfilePage';
 //import AdminPanel from './pages/AdminPanel';
@@ -34,6 +39,11 @@ export default function App() {
                             <Route path="/login" element={<LoginPage />} />
                             <Route path="/register" element={<RegisterPage />} />
                             <Route path="*" element={<NotFoundPage />} />
+                            <Route path="/attualita" element={<Attualita />} />
+                            <Route path="/sport" element={<Sport />} />
+                            <Route path="/tecnologia" element={<Tecnologia />} />
+                            <Route path="/salute" element={<Salute />} />
+                            <Route path="/intrattenimento" element={<Intrattenimento />} />
                         </Routes>
                     </header>
                 </div>

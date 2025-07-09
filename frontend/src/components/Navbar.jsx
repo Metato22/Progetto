@@ -36,7 +36,7 @@ export default function AppNavbar() {
                                     fontSize: '1.1rem' /* Dimensione leggermente aumentata */
                                 }}
                             />
-                            NOWTRENDS
+                            NowTrends
                         </h1>
                     </Link>
 
@@ -108,7 +108,7 @@ export default function AppNavbar() {
                                 />
                                 Categorie
                             </button>
-                            <ul className="dropdown-menu">
+                           <ul className="dropdown-menu">
                                 {categories.length === 0 ? (
                                     <li><Link to="/" className="dropdown-item" disabled>Caricamento...</Link></li>
                                     ) : (
@@ -124,7 +124,13 @@ export default function AppNavbar() {
                                     </li>
                                     ))
                                 )}
+                                <li><Link className="dropdown-item" to="/attualita">Attualità</Link></li>
+                                <li><Link className="dropdown-item" to="/sport">Sport</Link></li>
+                                <li><Link className="dropdown-item" to="/tecnologia">Tecnologia</Link></li>
+                                <li><Link className="dropdown-item" to="/salute">Salute</Link></li>
+                                <li><Link className="dropdown-item" to="/intrattenimento">Intrattenimento</Link></li>
                             </ul>
+
                         </div>
                         <Link to="/StaiSeguendo" className="category-btn">
                             <BookmarkIcon
