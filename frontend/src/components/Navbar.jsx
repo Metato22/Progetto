@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import axios from '../api/axiosInstance'; // assicurati che l'istanza Axios sia corretta
+import { useAuth } from '../auth/useAuth';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from '../api/axiosInstance';
 import ArticleIcon from '@mui/icons-material/Article';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import LoginIcon from '@mui/icons-material/Login';
@@ -13,6 +15,8 @@ import '../styles/Navbar.css';
 
 export default function AppNavbar() {
     const [categories, setCategories] = useState([]);
+    const { user, isAdmin, logout } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get('/categories')
@@ -20,7 +24,14 @@ export default function AppNavbar() {
             .catch(err => console.error('Errore nel caricamento categorie', err));
     }, []);
 
-
+    const handleLogout = async () => {
+        try {
+            await logout();  // usa logout dal context, che dovrebbe chiamare backend e pulire stato + localStorage
+            navigate('/login');
+        } catch (error) {
+            console.error('Errore nel logout:', error);
+        }
+    };
 
     return (
         <div className="sticky-top bg-white">
@@ -30,10 +41,10 @@ export default function AppNavbar() {
                         <h1 className="m-0 display-5 fw-bold">
                             <ArticleIcon
                                 fontSize="small"
-                                className="me-2" /* Più spazio */
+                                className="me-2"
                                 style={{
-                                    transform: 'translateY(-0.8px)', /* Micro-aggiustamento verticale */
-                                    fontSize: '1.1rem' /* Dimensione leggermente aumentata */
+                                    transform: 'translateY(-0.8px)',
+                                    fontSize: '1.1rem'
                                 }}
                             />
                             NowTrends
@@ -53,6 +64,7 @@ export default function AppNavbar() {
                             </button>
                         </form>
                     </div>
+
                     <div className="d-flex">
                         <Link to="/contacts" className="btn btn-outline-light">
                             <ContactPageIcon
@@ -66,18 +78,48 @@ export default function AppNavbar() {
                             Contacts
                         </Link>
                     </div>
+
                     <div className="d-flex">
-                        <Link to="/login" className="btn btn-outline-light">
-                            <LoginIcon
-                                fontSize="small"
-                                className="me-2"
-                                style={{
-                                    transform: 'translateY(-0.8px)',
-                                    fontSize: '1.1rem'
-                                }}
-                            />
-                            Login
-                        </Link>
+                        {user ? (
+                            <div className="dropdown">
+                                <button
+                                    className="btn btn-outline-light rounded-circle d-flex align-items-center justify-content-center"
+                                    type="button"
+                                    id="userMenuButton"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    style={{ width: '40px', height: '40px' }}
+                                >
+                                    <AccountCircleIcon />
+                                </button>
+                                <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
+                                    <li>
+                                        <Link className="dropdown-item" to="/profile">Profilo</Link>
+                                    </li>
+                                    {isAdmin && (
+                                        <li>
+                                            <Link className="dropdown-item" to="/admin">Admin Panel</Link>
+                                        </li>
+                                    )}
+                                    <li><hr className="dropdown-divider" /></li>
+                                    <li>
+                                        <button className="dropdown-item" onClick={handleLogout}>Logout</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        ) : (
+                            <Link to="/login" className="btn btn-outline-light">
+                                <LoginIcon
+                                    fontSize="small"
+                                    className="me-2"
+                                    style={{
+                                        transform: 'translateY(-0.8px)',
+                                        fontSize: '1.1rem'
+                                    }}
+                                />
+                                Login
+                            </Link>
+                        )}
                     </div>
                 </div>
             </nav>
@@ -88,10 +130,10 @@ export default function AppNavbar() {
                         <Link to="/" className="category-btn">
                             <HomeIcon
                                 fontSize="small"
-                                className="me-2" /* Più spazio */
+                                className="me-2"
                                 style={{
-                                    transform: 'translateY(-0.8px)', /* Micro-aggiustamento verticale */
-                                    fontSize: '1.1rem' /* Dimensione leggermente aumentata */
+                                    transform: 'translateY(-0.8px)',
+                                    fontSize: '1.1rem'
                                 }}
                             />
                             Homepage
@@ -108,29 +150,24 @@ export default function AppNavbar() {
                                 />
                                 Categorie
                             </button>
-                           <ul className="dropdown-menu">
+                            <ul className="dropdown-menu">
                                 {categories.length === 0 ? (
-                                    <li><Link to="/" className="dropdown-item" disabled>Caricamento...</Link></li>
-                                    ) : (
-                                    categories.map(c => (
                                     <li>
-                                        <Link
-                                            key={c._id}
-                                            className="dropdown-item"
-                                            to={`/category/${c.slug || c.name.toLowerCase()}`}
-                                        >
-                                            {c.name}
-                                        </Link>
+                                        <span className="dropdown-item disabled">Caricamento...</span>
                                     </li>
+                                ) : (
+                                    categories.map(c => (
+                                        <li key={c._id}>
+                                            <Link
+                                                className="dropdown-item"
+                                                to={`/category/${c.slug}`}
+                                            >
+                                                {c.name}
+                                            </Link>
+                                        </li>
                                     ))
                                 )}
-                                <li><Link className="dropdown-item" to="/attualita">Attualità</Link></li>
-                                <li><Link className="dropdown-item" to="/sport">Sport</Link></li>
-                                <li><Link className="dropdown-item" to="/tecnologia">Tecnologia</Link></li>
-                                <li><Link className="dropdown-item" to="/salute">Salute</Link></li>
-                                <li><Link className="dropdown-item" to="/intrattenimento">Intrattenimento</Link></li>
                             </ul>
-
                         </div>
                         <Link to="/StaiSeguendo" className="category-btn">
                             <BookmarkIcon
@@ -143,7 +180,7 @@ export default function AppNavbar() {
                             />
                             Stai seguendo
                         </Link>
-                        <Link to="/Italia" className="category-btn">
+                        <Link to="/italia" className="category-btn">
                             <FlagIcon
                                 fontSize="small"
                                 className="me-2"
@@ -154,7 +191,7 @@ export default function AppNavbar() {
                             />
                             Italia
                         </Link>
-                        <Link to="/DalMondo" className="category-btn">
+                        <Link to="/mondo" className="category-btn">
                             <PublicIcon
                                 fontSize="small"
                                 className="me-2"

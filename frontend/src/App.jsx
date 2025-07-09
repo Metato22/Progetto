@@ -5,18 +5,14 @@ import AppNavbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import NewsPage from './pages/NewsPage';
 import LoginPage from './pages/LoginPage';
-import Attualita from './pages/Attualita';
-import Sport from './pages/Sport';
-import Tecnologia from './pages/Tecnologia';
-import Salute from './pages/Salute';
-import Intrattenimento from './pages/Intrattenimento';
+import CategoryPage from './pages/CategoryPage';
 import Italia from './pages/Italia';
-import DalMondo from './pages/DalMondo';
+import Mondo from './pages/Mondo';
 import StaiSeguendo from './pages/StaiSeguendo';
 import Contacts from './pages/Contacts';
 import RegisterPage from './pages/RegisterPage';
-//import ProfilePage from './pages/ProfilePage';
-//import AdminPanel from './pages/AdminPanel';
+import ProfilePage from './pages/ProfilePage';
+import AdminPanel from './pages/AdminPanel';
 import NotFoundPage from './pages/NotFoundPage';
 import './styles/App.css';
 
@@ -43,14 +39,12 @@ export default function App() {
                             <Route path="/login" element={<LoginPage />} />
                             <Route path="/register" element={<RegisterPage />} />
                             <Route path="*" element={<NotFoundPage />} />
-                            <Route path="/attualita" element={<Attualita />} />
-                            <Route path="/sport" element={<Sport />} />
-                            <Route path="/tecnologia" element={<Tecnologia />} />
-                            <Route path="/salute" element={<Salute />} />
-                            <Route path="/intrattenimento" element={<Intrattenimento />} />
+                            <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+                            <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
+                            <Route path="/category/:slug" element={<CategoryPage />} />
                             <Route path="/staiseguendo" element={<StaiSeguendo />} />
                             <Route path="/italia" element={<Italia />} />
-                            <Route path="/dalmondo" element={<DalMondo />} />
+                            <Route path="/mondo" element={<Mondo />} />
                             <Route path="/contacts" element={<Contacts />} />
                         </Routes>
                     </header>

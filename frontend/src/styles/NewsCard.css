@@ -1,0 +1,13 @@
+.btn-custom-dark {
+    background-color: #222;
+    color: white;
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 6px 12px;
+    text-decoration: none;
+}
+
+.btn-custom-dark:hover {
+    background-color: #111;
+    color: white;
+}

@@ -1,0 +1,34 @@
+.login-link-container {
+    color: white;
+}
+
+.login-link-container a {
+    color: #90caf9;
+    text-decoration: none;
+}
+
+.login-link-container a:hover {
+    text-decoration: underline;
+}
+
+.dark-button {
+    background-color: black !important;
+    color: #fff !important;
+    border: none !important;
+}
+
+.dark-button:hover {
+    background-color: #222222 !important;
+    color: #fff !important;
+}
+
+.google-button {
+    background-color: black !important;
+    color: white !important;
+    font-weight: 500 !important;
+    border: none !important;
+}
+
+.google-button:hover {
+    background-color: #222222 !important;
+}

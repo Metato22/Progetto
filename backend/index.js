@@ -16,7 +16,7 @@ require('./config/passportGoogle')(passport);
 // consultazione notizie, gestione categorie
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
-const newsRouts = require('./routes/newsRoutes');
+const newsRoutes = require('./routes/newsRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 
@@ -72,7 +72,7 @@ app.use(cookieParser()); // Per parsare i cookie
 // Routes API
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
-app.use('/api/news', newsRouts);
+app.use('/api/news', newsRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/comments', commentRoutes);
 
@@ -82,9 +82,13 @@ app.get('/', (req, res) => {
 });
 
 // Gestione di rotte non trovate (404)
-app.use('*', (req, res) => {
+/*app.use('*', (req, res) => {
+    res.status(404).json({ message: 'Endpoint non trovato' });
+});*/
+app.use((req, res) => {
     res.status(404).json({ message: 'Endpoint non trovato' });
 });
+
 
 // Semplice gestore di errori globale
 app.use((err, req, res, next) => {

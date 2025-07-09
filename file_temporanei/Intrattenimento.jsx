@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import axios from '../api/axiosInstance';
-import NewsCard from '../components/NewsCard';
-import '../styles/HomePage.css';
+import axios from '../frontend/src/api/axiosInstance';
+import {NewsCard} from '../frontend/src/components/NewsCard';
+import '../frontend/src/styles/HomePage.css';
 import {Button, Card, Container, Spinner} from 'react-bootstrap';
 import Grid from "@mui/material/Grid";
 import {Link} from "react-router-dom";
@@ -9,9 +9,7 @@ import Box from "@mui/material/Box";
 import * as React from "react";
 import {styled} from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
-import '../styles/PagesStyles.css'
-
-
+import '../frontend/src/styles/PagesStyles.css'
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#424242',
     ...theme.typography.body2,
@@ -23,7 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
     }),
 }));
 
-export default function Atualita() {
+export default function Intrattenimento() {
     const [news, setNews] = useState(null);
 
     useEffect(() => {
@@ -57,14 +55,14 @@ export default function Atualita() {
                         <Grid size={12}>
                             <Item>
                                 <div className="header-container">
-                                    <h1 className="section-title2">Attualità</h1>
+                                    <h1 className="section-title2">Intrattenimento</h1>
                                     <button type="button" className="btn special-outline-light btn-lg">
                                         Segui
                                     </button>
                                 </div>
-                                <Grid size={12}>
-                                    {news.map(n => <NewsCard key={n._id} news={n}/>)}
-                                </Grid>
+                                    <Grid size={12}>
+                                        {news.map(n => <NewsCard key={n._id} news={n}/>)}
+                                    </Grid>
                             </Item>
                         </Grid>
                     </Grid>

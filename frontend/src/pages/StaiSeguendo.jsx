@@ -1,27 +1,14 @@
 import { useEffect, useState } from 'react';
 import axios from '../api/axiosInstance';
-import NewsCard from '../components/NewsCard';
+import {NewsCard} from '../components/NewsCard';
 import '../styles/HomePage.css';
 import {Button, Card, Container, Spinner} from 'react-bootstrap';
 import Grid from "@mui/material/Grid";
 import {Link} from "react-router-dom";
 import Box from "@mui/material/Box";
 import * as React from "react";
-import {styled} from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
+import Item from '../components/Item';
 import '../styles/PagesStyles.css'
-
-
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#424242',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: (theme.vars ?? theme).palette.text.secondary,
-    ...theme.applyStyles('dark', {
-        backgroundColor: '#1A2027',
-    }),
-}));
 
 export default function StaiSeguendo() {
     const [news, setNews] = useState(null);

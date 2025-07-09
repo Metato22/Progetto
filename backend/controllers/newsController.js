@@ -8,18 +8,29 @@ const getAllNews = async (req, res) => {
         const userLevel = req.userSubscription || 'free';
 
         if (req.query.category) {
-            filter.category = req.query.category;
+            const category = await Category.findOne({ slug: req.query.category }); // oppure usa name se non hai slug
+            if (!category) {
+                return res.status(404).json({ message: 'Categoria non trovata' });
+            }
+            filter.category = category._id;
+        }
+
+        if (req.query.region) {
+            if (!['Italia', 'Mondo'].includes(req.query.region)) {
+                return res.status(400).json({ message: 'Regione non valida' });
+            }
+            filter.region = req.query.region;
         }
 
         filter.accessLevel = userLevel === 'premium' ? { $in: ['free', 'premium'] } : 'free';
 
         const news = await News.find(filter)
-            .sort({ createdAt: -1 })
+            .sort({ updatedAt: -1 })
             .populate('category', 'name')
-            .select('title imageUrl category likes dislikes accessLevel createdAt')
+            .select('title content imageUrl category region likes dislikes accessLevel createdAt updatedAt')
             .lean({ virtuals: true });
 
-        res.json(news.map(n => ({ ...n, excerpt: n.excerpt })));
+        res.json(news);
     } catch (err) {
         console.error("Errore nel caricamento delle notizie:", err.message);
         res.status(500).json({ message: "Errore interno del server" });

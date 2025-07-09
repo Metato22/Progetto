@@ -1,19 +1,7 @@
-import { Card, Button } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import * as React from "react";
-import {styled} from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
-
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#424242',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: (theme.vars ?? theme).palette.text.secondary,
-    ...theme.applyStyles('dark', {
-        backgroundColor: '#1A2027',
-    }),
-}));
+import '../styles/NewsCard.css';
 
 export default function SecondNewsCard({ news }) {
     return (
@@ -21,9 +9,21 @@ export default function SecondNewsCard({ news }) {
             <Card.Img variant="top" src={news.imageUrl} style={{height: '150px', objectFit: 'cover'}}/>
             <Card.Body>
                 <Card.Title style={{fontSize: '1rem'}}>{news.title}</Card.Title>
-                <Button variant="outline-primary" size="sm" as={Link} to={`/news/${news._id}`}>
+                <p className="card-text">{news.excerpt}</p>
+                <Link to={`/news/${news._id}`} className="btn-custom-dark">
                     Leggi tutto
-                </Button>
+                </Link>
+                <p className="card-text">
+                    <small className="text-body-secondary">
+                        Ultima modifica: {new Date(news.updatedAt).toLocaleString('it-IT', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })}
+                    </small>
+                </p>
             </Card.Body>
         </Card>
     );
