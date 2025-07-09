@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from '../api/axiosInstance';
 import NewsCard from '../components/NewsCard';
+import SecondNewsCard from '../components/SecondNewsCard';
 import '../styles/HomePage.css';
 import {Button, Card, Container, Spinner} from 'react-bootstrap';
 import Grid from "@mui/material/Grid";
@@ -70,7 +71,7 @@ export default function HomePage() {
                                         <h1 className="section-title">Scelti per te</h1>
                                         <Grid size={12}>
 
-                                            {news.map(n => <NewsCard key={n._id} news={n} />)}
+                                            {news.map(n => <SecondNewsCard key={n._id} news={n} />)}
 
                                         </Grid>
                                     </Grid>
