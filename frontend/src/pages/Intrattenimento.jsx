@@ -39,7 +39,7 @@ export default function Intrattenimento() {
             {
                 _id: 1,
                 title: "Titolo Notizia 1",
-                imageUrl: "Pierre_kalulu.webp",
+                imageUrl: "logo_nowtrends.png",
                 description: "Descrizione della prima card",
                 altText: "Immagine 1"
             }])

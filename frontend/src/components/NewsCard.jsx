@@ -17,17 +17,20 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function NewsCard({ news }) {
     return (
-        <Item>
-            <Card>
-                {news.imageUrl && <Card.Img variant="top" src={news.imageUrl} style={{ height: 180, objectFit: 'cover' }} />}
-                <Card.Body className="d-flex flex-column">
-                    <Card.Title className="mb-2">{news.title}</Card.Title>
-                    <Card.Text className="text-muted flex-grow-1">{news.excerpt}</Card.Text>
-                    <Button as={Link} to={`/news/${news._id}`} variant="outline-primary" size="sm">
-                        Leggi tutto
-                    </Button>
-                </Card.Body>
-            </Card>
-        </Item>
+        <div className="card mb-3 " style={{ maxWidth: '2000px' }}>
+            <div className="row g-0">
+                <div className="col-md-4">
+                    <img src={news.imageUrl} className="img-fluid rounded-start" alt="..."/>
+                </div>
+                <div className="col-md-8">
+                    <div className="card-body">
+                        <h5 className="card-title">{news.title}</h5>
+                        <p className="card-text">{news.excerpt}</p>
+                        <p className="card-text"><small className="text-body-secondary">Last updated 3 mins ago</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }
