@@ -55,7 +55,7 @@ export default function HomePage() {
 
     return (
         <Container>
-            <h2 className="section-title0">Ultime Notizie</h2>
+            <h2 className="section-title0">ULTIME NOTIZIE</h2>
             {!news ? (
                 <Spinner animation="border" />
             ) : (
