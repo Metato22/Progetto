@@ -9,6 +9,8 @@ import Box from "@mui/material/Box";
 import * as React from "react";
 import {styled} from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
+import '../styles/PagesStyles.css'
+
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#424242',
@@ -54,7 +56,12 @@ export default function Atualita() {
                     <Grid container rowSpacing={0.5} columnSpacing={{xs: 1, sm: 2, md: 3}}>
                         <Grid size={12}>
                             <Item>
-                                <h1 className="section-title">Attualità</h1>
+                                <div className="header-container">
+                                    <h1 className="section-title2">Attualità</h1>
+                                    <button type="button" className="btn special-outline-light btn-lg">
+                                        Segui
+                                    </button>
+                                </div>
                                 <Grid size={12}>
                                     {news.map(n => <NewsCard key={n._id} news={n}/>)}
                                 </Grid>
