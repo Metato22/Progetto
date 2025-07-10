@@ -11,14 +11,19 @@ const getCategories = async (req, res) => {
     }
 };
 
-// ✅ Ottieni una categoria per ID
-const getCategoryById = async (req, res) => {
+// ✅ Ottieni una categoria per slug
+const getCategoryBySlug = async (req, res) => {
     try {
-        const category = await Category.findById(req.params.id);
-        if (!category) return res.status(404).json({ message: 'Categoria non trovata' });
-        res.json(category);
+        const slug = req.params.slug;
+        const category = await Category.findOne({ slug: slug });
+
+        if (!category) {
+            return res.status(404).json({ message: 'Categoria non trovata' });
+        }
+
+        res.status(200).json(category);
     } catch (err) {
-        console.error('Errore nel recupero categoria:', err.message);
+        console.error('Errore nel recuperare la categoria:', err.message);
         res.status(500).json({ message: 'Errore del server' });
     }
 };
@@ -81,7 +86,7 @@ const deleteCategory = async (req, res) => {
 
 module.exports = {
     getCategories,
-    getCategoryById,
+    getCategoryBySlug,
     createCategory,
     updateCategory,
     deleteCategory

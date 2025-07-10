@@ -23,8 +23,19 @@ const userSchema = new mongoose.Schema({
 
     password: {
         type: String,
-        minlength: [8, "La password deve essere di almeno 6 caratteri"]
-    }, // non obbligatoria per utenti Google
+        minlength: [8, "La password deve essere di almeno 8 caratteri"],
+        validate: {
+            validator: function(v) {
+                // Se password è presente (perché può non esserci con googleId)
+                if (!v) return true; // saltalo, validazione passata se vuoto
+                return /[a-z]/.test(v) &&          // almeno una minuscola
+                    /[A-Z]/.test(v) &&          // almeno una maiuscola
+                    /\d/.test(v) &&             // almeno un numero
+                    /[!@#$%^&*(),.?":{}|<>]/.test(v); // almeno un carattere speciale
+            },
+            message: "La password deve contenere almeno una lettera minuscola, una maiuscola, un numero e un carattere speciale."
+        }
+    },
 
     googleId: {
         type: String // presente se l’utente si registra via Google

@@ -22,6 +22,12 @@ const newsSchema = new mongoose.Schema({
         required: true
     },
 
+    region: {
+        type: String,
+        enum: ['Italia', 'Mondo'],
+        default: 'Mondo'
+    },
+
     accessLevel: {
         type: String,
         enum: ['free', 'premium'],

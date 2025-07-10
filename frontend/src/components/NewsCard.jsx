@@ -1,23 +1,10 @@
-import { Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import * as React from "react";
-import {styled} from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
+import '../styles/NewsCard.css';
 
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#424242',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: (theme.vars ?? theme).palette.text.secondary,
-    ...theme.applyStyles('dark', {
-        backgroundColor: '#1A2027',
-    }),
-}));
-
-export default function NewsCard({ news }) {
+export function NewsCard({news}) {
     return (
-        <div className="card mb-3 " style={{ maxWidth: '2000px' }}>
+        <div className="card mb-3 " style={{maxWidth: '2000px'}}>
             <div className="row g-0">
                 <div className="col-md-4">
                     <img src={news.imageUrl} className="img-fluid rounded-start" alt="..."/>
@@ -26,7 +13,19 @@ export default function NewsCard({ news }) {
                     <div className="card-body">
                         <h5 className="card-title">{news.title}</h5>
                         <p className="card-text">{news.excerpt}</p>
-                        <p className="card-text"><small className="text-body-secondary">Last updated 3 mins ago</small>
+                        <Link to={`/news/${news._id}`} className="btn-custom-dark">
+                            Leggi tutto
+                        </Link>
+                        <p className="card-text">
+                            <small className="text-body-secondary">
+                                Ultima modifica: {new Date(news.updatedAt).toLocaleString('it-IT', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            })}
+                            </small>
                         </p>
                     </div>
                 </div>

@@ -20,7 +20,12 @@ const generateTokens = (user) => {
 // ✅ Registrazione utente locale
 exports.registerUser = async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password, googleId } = req.body;
+
+        // Controllo obbligatorietà password se non è registrazione Google
+        if (!password && !googleId) {
+            return res.status(400).json({ message: "La password è obbligatoria per la registrazione classica." });
+        }
 
         // Verifica se username o email sono già usati
         if (await User.findOne({ username })) {
@@ -32,15 +37,26 @@ exports.registerUser = async (req, res) => {
 
         // Crea nuovo utente (la password verrà hashata dal pre-save)
         const newUser = new User({ username, email, password });
+        if (googleId) {
+            newUser.googleId = googleId;
+        }
         await newUser.save();
 
         res.status(201).json({ message: "Utente registrato con successo!", userId: newUser._id });
+        console.log("Utente registrato:", newUser);
     } catch (error) {
         console.error("Errore registrazione:", error);
         if (error.name === 'ValidationError') {
             const messages = Object.values(error.errors).map(val => val.message);
             return res.status(400).json({ message: messages.join('. ') });
         }
+
+        // Duplicato (controllo in più, a volte mongoose manda errore diverso)
+        if (error.code && error.code === 11000) {
+            const field = Object.keys(error.keyValue)[0];
+            return res.status(400).json({ message: `${field.charAt(0).toUpperCase() + field.slice(1)} già in uso.` });
+        }
+
         res.status(500).json({ message: "Errore del server durante la registrazione." });
     }
 };
@@ -49,12 +65,24 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
+        console.log('Email ricevuta:', email);
+        console.log('Password ricevuta:', password);
         if (!email || !password) {
             return res.status(400).json({ message: "Email e password sono obbligatori." });
         }
 
-        const user = await User.findOne({ email });
-        if (!user || !(await user.comparePassword(password))) {
+        // Usa email lowercase per sicurezza
+        const user = await User.findOne({ email: email.toLowerCase() });
+        console.log('Utente trovato:', user);
+
+        if (!user) {
+            return res.status(401).json({ message: "Credenziali non valide." });
+        }
+
+        const isMatch = await user.comparePassword(password);
+        console.log('Password corretta:', isMatch);
+
+        if (!isMatch) {
             return res.status(401).json({ message: "Credenziali non valide." });
         }
 

@@ -11,7 +11,7 @@ const { verifyAccessToken, verifyRole } = require('../middlewares/authMiddleware
 router.get('/', categoryController.getCategories);
 
 // ✅ Recupera una categoria specifica
-router.get('/:id', categoryController.getCategoryById);
+router.get('/:slug', categoryController.getCategoryBySlug);
 
 // ✅ Crea una nuova categoria (solo admin)
 router.post(

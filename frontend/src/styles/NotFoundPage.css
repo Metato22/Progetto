@@ -1,0 +1,10 @@
+.dark-button {
+    background-color: black !important;
+    color: #fff !important;
+    border: none !important;
+}
+
+.dark-button:hover {
+    background-color: #222222 !important;
+    color: #fff !important;
+}

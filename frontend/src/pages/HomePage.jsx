@@ -1,26 +1,13 @@
 import { useEffect, useState } from 'react';
 import axios from '../api/axiosInstance';
-import NewsCard from '../components/NewsCard';
+import {NewsCard} from '../components/NewsCard';
 import SecondNewsCard from '../components/SecondNewsCard';
 import '../styles/HomePage.css';
-import {Button, Card, Container, Spinner} from 'react-bootstrap';
+import {Container, Spinner} from 'react-bootstrap';
 import Grid from "@mui/material/Grid";
-import {Link} from "react-router-dom";
 import Box from "@mui/material/Box";
 import * as React from "react";
-import {styled} from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
-
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#424242',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: (theme.vars ?? theme).palette.text.secondary,
-    ...theme.applyStyles('dark', {
-        backgroundColor: '#1A2027',
-    }),
-}));
+import Item from '../components/Item';
 
 export default function HomePage() {
     const [news, setNews] = useState(null);
@@ -65,9 +52,7 @@ export default function HomePage() {
                             <Item>
                                 <h1 className="section-title">Notizie principali</h1>
                                 <Grid size={12}>
-
                                     {news.map(n => <NewsCard key={n._id} news={n} />)}
-
                                 </Grid>
                             </Item>
                         </Grid>
@@ -77,9 +62,7 @@ export default function HomePage() {
                                     <Grid container rowSpacing={1} columnSpacing={{xs: 1, sm: 2, md: 3}}>
                                         <h1 className="section-title">Scelti per te</h1>
                                         <Grid size={12}>
-
                                             {news.map(n => <SecondNewsCard key={n._id} news={n} />)}
-
                                         </Grid>
                                     </Grid>
                                 </Box>
