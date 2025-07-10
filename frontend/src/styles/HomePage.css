@@ -1,10 +1,10 @@
 .news-container {
     padding: 2rem;
     background-color: #f8f9fa;
+
 }
 
 .section-title0 {
-
     margin-left: 20px;
     margin-top: 30px;
     text-align: left;
@@ -13,8 +13,8 @@
     margin-bottom: 1.5rem;
     color: black;
 }
-.section-title {
 
+.section-title {
    padding-bottom: 3px;
     margin-left: 27px;
     margin-top: 15px;
@@ -26,7 +26,6 @@
 }
 
 .news-grid {
-
     padding-bottom: 5px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));

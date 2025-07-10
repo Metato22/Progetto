@@ -10,49 +10,31 @@ import * as React from "react";
 import Item from '../components/Item';
 
 export default function HomePage() {
-    const [news, setNews] = useState(null);
+    const [news, setNews] = useState([]);
+    const getNews = ()=>{
+        fetch('https://newsapi.org/v2/top-headlines?country=us&apiKey=a05726aa40f745b1b9e5f4f5bef74324')
+        .then(res => res.json())
+        .then(json => setNews(json.articles))
+    }
 
-    useEffect(() => {
-        /*axios.get('/news')
-            .then(res => setNews(res.data))
-            .catch(() => setNews([]));*/
-        setNews([
-            {
-                _id: 1,
-                title: "Titolo Notizia 1",
-                imageUrl: "logo_nowtrends.png",
-                description: "Descrizione della prima card",
-                altText: "Immagine 1"
-            },
-            {
-                _id: 1,
-                title: "Titolo Notizia 1",
-                imageUrl: "logo_nowtrends.png",
-                description: "Descrizione della prima card",
-                altText: "Immagine 1"
-            },
-            {
-                _id: 1,
-                title: "Titolo Notizia 1",
-                imageUrl: "logo_nowtrends.png",
-                description: "Descrizione della prima card",
-                altText: "Immagine 1"
-            }])
-    }, []);
+    useEffect(()=>{
+        getNews()
+        },[])
+
 
     return (
         <Container>
             <h2 className="section-title0">ULTIME NOTIZIE</h2>
-            {!news ? (
                 <Spinner animation="border" />
-            ) : (
                 <Box sx={{width: '100%', marginTop: '50px', padding: '20px'}}>
                     <Grid container rowSpacing={0.5} columnSpacing={{xs: 1, sm: 2, md: 3}}>
                         <Grid size={8}>
                             <Item>
                                 <h1 className="section-title">Notizie principali</h1>
                                 <Grid size={12}>
-                                    {news.map(n => <NewsCard key={n._id} news={n} />)}
+                                    {news.map((data) => {
+                                        return <NewsCard data={data}/>
+                                    })}
                                 </Grid>
                             </Item>
                         </Grid>

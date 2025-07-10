@@ -13,6 +13,7 @@ router.get('/', newsController.getAllNews);
 // Rotta per ottenere una singola notizia completa
 router.get('/:id', newsController.getNewsById);
 
+
 // Rotta per creare una nuova notizia (solo admin)
 router.post(
     '/',
