@@ -36,16 +36,20 @@
 
 }
 
-.navbar, .container-fluid {
+.navbar{
     border: none;
-    background-color: #424242;
+    background-color: #121212;
 }
 
 .navbar {
-    background-color: #424242;
+    background-color: #121212;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .d-flex {
     padding: 0.5rem;
+}
+
+.container-fluid{
+    background-color: #121212;
 }
