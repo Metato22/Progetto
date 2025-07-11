@@ -108,48 +108,64 @@ export default function HomePage() {
     );
 
     return (
-        <Container>
-            <h2 className="section-title0">ULTIME NOTIZIE</h2>
-            {loading ? (
-                <Spinner animation="border" />
-            ) : (
-                <Box sx={{ width: '100%', marginTop: '50px', padding: '20px' }}>
-                    <Grid container rowSpacing={0.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                        <Grid item xs={12} md={8}>
-                            <Item style={{ maxWidth: '650px', margin: '0 auto' }}>
-                                <h1 className="section-title">Notizie principali</h1>
-                                <Grid container spacing={2}>
-                                    {combinedNews.map((news) => (
-                                        <Grid item xs={12} key={news._id ?? news.title}>
-                                            <NewsCard data={news} />
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                            </Item>
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <Item>
-                                <Box sx={{ width: '100%' }}>
-                                    <h1 className="section-title">Scelti per te</h1>
-                                    {isAuthenticated ? (
-                                        combinedPersonalizedNews.length > 0 ? (
-                                            combinedPersonalizedNews.map((news) => (
-                                                <SecondNewsCard key={news._id ?? news.title} news={news} />
-                                            ))
+        <Box sx={{ width: '100%' }}>
+            <h1 classname="section-title1">ULTIME NOTIZIE</h1>
+            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                <Grid size={8}>
+                    <Item>
+
+                        <Box sx={{ width: '100%' }}>
+                            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                                <Grid size={12}>
+                                    <Item>
+                                        <h2 className="section-title">Notizie principali</h2>
+                                        {loading ? (
+                                            <Spinner animation="border" />
                                         ) : (
-                                            <p className="text-white">Nessuna notizia personalizzata disponibile.</p>
-                                        )
-                                    ) : (
-                                        <p style={{ padding: '10px', color: 'white' }}>
-                                            Per vedere contenuti personalizzati, <strong><a href="/login">accedi</a></strong> o <strong><a href="/register">registrati</a></strong>.
-                                        </p>
-                                    )}
-                                </Box>
-                            </Item>
-                        </Grid>
-                    </Grid>
-                </Box>
-            )}
-        </Container>
+                                            <Grid container spacing={2}>
+                                                {combinedNews.map((news) => (
+                                                    <Grid item xs={12} key={news.id ?? news.title}>
+                                                        <NewsCard data={news} />
+                                                    </Grid>
+                                                ))}
+                                            </Grid>
+                                        )}
+                                    </Item>
+                                </Grid>
+                            </Grid>
+                        </Box>
+
+
+
+
+
+                    </Item>
+                </Grid>
+                <Grid size={4}>
+                    <Item>
+
+                        <Box sx={{ width: '100%' }}>
+                            <h1 className="section-title">Scelti per te</h1>
+                            {isAuthenticated ? (
+                                combinedPersonalizedNews.length > 0 ? (
+                                    combinedPersonalizedNews.map((news) => (
+                                        <SecondNewsCard key={news._id ?? news.title} news={news} />
+                                    ))
+                                ) : (
+                                    <p className="text-white">Nessuna notizia personalizzata disponibile.</p>
+                                )
+                            ) : (
+                                <p style={{ padding: '10px', color: 'white' }}>
+                                    Per vedere contenuti personalizzati, <strong><a href="/login">accedi</a></strong> o <strong><a href="/register">registrati</a></strong>.
+                                </p>
+                            )}
+                        </Box>
+
+
+
+                    </Item>
+                </Grid>
+            </Grid>
+        </Box>
     );
 }
