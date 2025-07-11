@@ -169,7 +169,7 @@ export default function AppNavbar() {
                                 )}
                             </ul>
                         </div>
-                        <Link to="/StaiSeguendo" className="category-btn">
+                        <Link to="/preferiti" className="category-btn">
                             <BookmarkIcon
                                 fontSize="small"
                                 className="me-2"
@@ -178,7 +178,7 @@ export default function AppNavbar() {
                                     fontSize: '1.1rem'
                                 }}
                             />
-                            Stai seguendo
+                            Preferiti
                         </Link>
                         <Link to="/italia" className="category-btn">
                             <FlagIcon

@@ -1,7 +1,9 @@
 import { useAuth } from '../auth/useAuth';
 import axios from '../api/axiosInstance';
 import { useState } from 'react';
-import { Container, Button, Alert } from 'react-bootstrap';
+import {Container, Button, Alert} from 'react-bootstrap';
+import Item from '../components/Item';
+import '../styles/ProfilePage.css'
 
 export default function ProfilePage() {
     const { user } = useAuth();
@@ -20,14 +22,22 @@ export default function ProfilePage() {
 
     return (
         <Container>
-            <h2>Profilo utente</h2>
-            <p><strong>Username:</strong> {user.username}</p>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Abbonamento:</strong> {user.subscriptionLevel}</p>
-            {user.subscriptionLevel === 'free' && (
-                <Button variant="success" onClick={upgrade}>Passa a Premium</Button>
-            )}
-            {message && <Alert className="mt-3">{message}</Alert>}
+            <Item>
+                <div className="profile-card">
+                    <h2 className="title-contact">Profilo utente</h2>
+                    <p><strong>Nome:</strong> {user.name || '—'}</p>
+                    <p><strong>Cognome:</strong> {user.surname || '—'}</p>
+                    <p><strong>Username:</strong> {user.username}</p>
+                    <p><strong>Email:</strong> {user.email}</p>
+                    <p><strong>Abbonamento:</strong> {user.planLevel}</p>
+
+                    {user.planLevel === 'free' && (
+                        <Button variant="success" onClick={upgrade}>Passa a Premium</Button>
+                    )}
+
+                    {message && <Alert className="mt-3">{message}</Alert>}
+                </div>
+            </Item>
         </Container>
     );
 }

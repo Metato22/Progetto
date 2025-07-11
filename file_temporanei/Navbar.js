@@ -65,7 +65,7 @@ function NavBar() {
                                 ))
                             )}
                         </NavDropdown>
-                        <Link to="/StaiSeguendo" className="category-btn">Stai seguendo</Link>
+                        <Link to="/Preferiti" className="category-btn">Stai seguendo</Link>
                         <Link to="/Italy" className="category-btn">Italia</Link>
                         <Link to="/World" className="category-btn">Dal Mondo</Link>
                     </div>

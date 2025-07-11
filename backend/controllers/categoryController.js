@@ -31,13 +31,13 @@ const getCategoryBySlug = async (req, res) => {
 // ✅ Crea una nuova categoria (solo admin)
 const createCategory = async (req, res) => {
     try {
-        const { name, description } = req.body;
+        const { name, description, gnewsCategory } = req.body;
         if (!name) return res.status(400).json({ message: 'Nome categoria obbligatorio' });
 
         const exists = await Category.findOne({ name });
         if (exists) return res.status(400).json({ message: 'Categoria già esistente' });
 
-        const cat = new Category({ name, description });
+        const cat = new Category({ name, description, gnewsCategory });
         await cat.save();
 
         res.status(201).json(cat);
@@ -50,7 +50,7 @@ const createCategory = async (req, res) => {
 // ✅ Aggiorna una categoria (solo admin)
 const updateCategory = async (req, res) => {
     try {
-        const { name, description } = req.body;
+        const { name, description, gnewsCategory } = req.body;
 
         if (name) {
             const exists = await Category.findOne({ name, _id: { $ne: req.params.id } });
@@ -59,7 +59,7 @@ const updateCategory = async (req, res) => {
 
         const updated = await Category.findByIdAndUpdate(
             req.params.id,
-            { name, description },
+            { name, description, gnewsCategory },
             { new: true, runValidators: true }
         );
 

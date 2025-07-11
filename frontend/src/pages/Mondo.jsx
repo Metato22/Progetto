@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import axios from '../api/axiosInstance';
-import {NewsCard} from '../components/NewsCard';
+import { NewsCard } from '../components/NewsCard';
 import '../styles/HomePage.css';
-import { Container, Spinner} from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import * as React from "react";
@@ -10,28 +10,61 @@ import Item from '../components/Item';
 import '../styles/PagesStyles.css'
 
 export default function Mondo() {
-    const [news, setNews] = useState(null);
+    const [manualNews, setManualNews] = useState([]);
+    const [externalNews, setExternalNews] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get('/news?region=Mondo')
-            .then(res => setNews(res.data))
-            .catch(() => setNews([]));
+        const fetchNews = async () => {
+            try {
+                const [manualRes, externalRes] = await Promise.all([
+                    axios.get('/news?region=Mondo'),
+                    axios.get('/external-news?gnewsCategory=world'),
+                ]);
+                setManualNews(manualRes.data);
+                setExternalNews(externalRes.data);
+            } catch (error) {
+                setManualNews([]);
+                setExternalNews([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchNews();
     }, []);
+
+    // Unione e deduplicazione (se serve)
+    const combinedNews = [...manualNews, ...externalNews].filter(
+        (news, index, self) =>
+            index === self.findIndex(n =>
+                (n._id && news._id && n._id === news._id) ||
+                (!n._id && !news._id && n.title === news.title)
+            )
+    );
 
     return (
         <Container>
-            {!news ? (
-                <Spinner animation="border"/>
+            {loading ? (
+                <Spinner animation="border" />
             ) : (
-                <Box sx={{width: '100%', marginTop: '50px', padding: '20px', }}>
-                    <Grid container rowSpacing={0.5} columnSpacing={{xs: 1, sm: 2, md: 3}}>
-                        <Grid size={12}>
+                <Box sx={{ width: '100%', marginTop: '50px', padding: '20px' }}>
+                    <Grid container rowSpacing={0.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                        <Grid item xs={12}>
                             <Item>
                                 <div className="header-container">
-                                    <h1 className="section-title2">Dal Mondo</h1>
+                                    <h1 className="section-title">Dal Mondo</h1>
                                 </div>
-                                <Grid size={12}>
-                                    {news.map(n => <NewsCard key={n._id} news={n}/>)}
+                                <Grid container spacing={2}>
+                                    {combinedNews.length > 0 ? (
+                                        combinedNews.map((n) => (
+                                            <Grid item xs={12} key={n._id ?? n.title}>
+                                                <NewsCard data={n} />
+                                            </Grid>
+                                        ))
+                                    ) : (
+                                        <p className="text-white">Nessuna notizia disponibile.</p>
+                                    )}
                                 </Grid>
                             </Item>
                         </Grid>

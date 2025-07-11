@@ -29,13 +29,14 @@
     border-radius: 8px;
 }
 
-.section-title2 {
-    margin-left: 15px;
-    margin-top: 20px;
-    margin-bottom: 30px;
+.section-title {
+    padding-bottom: 3px;
+    margin-left: 27px;
+    margin-top: 15px;
     text-align: left;
     font-size: 2rem;
     font-weight: 600;
-    color: white;
+    margin-bottom: 1.5rem;
+    color: blanchedalmond;
 }
 

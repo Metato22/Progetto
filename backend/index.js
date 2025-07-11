@@ -19,6 +19,7 @@ const userRoutes = require('./routes/userRoutes');
 const newsRoutes = require('./routes/newsRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const commentRoutes = require('./routes/commentRoutes');
+const externalNewsRoutes = require('./routes/externalNewsRoutes');
 
 // creazione dell'app con il framework express
 const app = express();
@@ -75,6 +76,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/comments', commentRoutes);
+app.use('/api/external-news', externalNewsRoutes);
 
 // Route di base per test
 app.get('/', (req, res) => {

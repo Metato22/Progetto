@@ -9,7 +9,7 @@ export default function NewsPage() {
     const [comments, setComments] = useState([]);
 
     useEffect(() => {
-        axios.get(`/news/${id}`).then(res => setNews(res.data));
+        axios.get(`/news/item/${id}`).then(res => setNews(res.data));
         axios.get(`/comments/${id}`).then(res => setComments(res.data));
     }, [id]);
 

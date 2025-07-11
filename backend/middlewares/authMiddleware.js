@@ -1,4 +1,3 @@
-// middlewares/authMiddleware.js
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel'); // Necessario per caricare l'utente se serve
 
@@ -22,7 +21,7 @@ const verifyAccessToken = (req, res, next) => {
         // Il token è valido, aggiungi l'ID dell'utente e il ruolo (se presente nel token) alla richiesta
         req.userId = decoded.userId; // Assicurati che il payload del token contenga userId
         req.userRole = decoded.role; // Se hai un ruolo nel token
-        req.userSubscription = decoded.subscriptionLevel || 'free';
+        req.planLevel = decoded.planLevel || 'free';
         next();
     });
 };

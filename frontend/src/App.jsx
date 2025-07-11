@@ -8,7 +8,7 @@ import LoginPage from './pages/LoginPage';
 import CategoryPage from './pages/CategoryPage';
 import Italia from './pages/Italia';
 import Mondo from './pages/Mondo';
-import StaiSeguendo from './pages/StaiSeguendo';
+import Preferiti from './pages/Preferiti';
 import Contacts from './pages/Contacts';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
@@ -42,7 +42,7 @@ export default function App() {
                             <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
                             <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
                             <Route path="/category/:slug" element={<CategoryPage />} />
-                            <Route path="/staiseguendo" element={<StaiSeguendo />} />
+                            <Route path="/preferiti" element={<Preferiti />} />
                             <Route path="/italia" element={<Italia />} />
                             <Route path="/mondo" element={<Mondo />} />
                             <Route path="/contacts" element={<Contacts />} />

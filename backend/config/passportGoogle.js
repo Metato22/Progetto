@@ -44,7 +44,7 @@ module.exports = (passport) => {
                         email,
                         username: generateUsernameFromEmail(email),
                         role: isAdmin ? 'admin' : 'user',
-                        subscriptionLevel: 'free'
+                        planLevel: 'free'
                     });
 
                     console.log(`🆕 Nuovo utente creato via Google: ${user.username} (${user.role})`);

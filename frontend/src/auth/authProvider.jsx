@@ -53,8 +53,9 @@ export const AuthProvider = ({ children }) => {
             value={{
                 user,
                 loading,
+                isAuthenticated: !!user,
                 isAdmin: user?.role === 'admin',
-                isPremium: user?.subscriptionLevel === 'premium',
+                isPremium: user?.planLevel === 'premium',
                 login,
                 logout,
             }}

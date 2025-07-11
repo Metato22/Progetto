@@ -11,8 +11,14 @@ const { verifyAccessToken, verifyRole } = require('../middlewares/authMiddleware
 router.get('/', newsController.getAllNews);
 
 // Rotta per ottenere una singola notizia completa
-router.get('/:id', newsController.getNewsById);
+router.get('/item/:id', newsController.getNewsById);
 
+// Rotta per ottenere notizie manuali personalizzate (utente autenticato)
+router.get(
+    '/personalized',
+    verifyAccessToken,
+    newsController.getPersonalizedNews
+);
 
 // Rotta per creare una nuova notizia (solo admin)
 router.post(

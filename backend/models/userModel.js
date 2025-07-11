@@ -3,6 +3,18 @@ const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
 
+    name: {
+        type: String,
+        required: [true, "Il nome è obbligatorio"],
+        trim: true
+    },
+
+    surname: {
+        type: String,
+        required: [true, "Il cognome è obbligatorio"],
+        trim: true
+    },
+
     username: {
         type: String,
         required: [true, "L'username è obbligatorio"],
@@ -17,7 +29,6 @@ const userSchema = new mongoose.Schema({
         unique: true,
         trim: true,
         lowercase: true,
-        // Regex semplice per validazione email
         match: [/\S+@\S+\.\S+/, "L'email non è valida"]
     },
 
@@ -26,19 +37,18 @@ const userSchema = new mongoose.Schema({
         minlength: [8, "La password deve essere di almeno 8 caratteri"],
         validate: {
             validator: function(v) {
-                // Se password è presente (perché può non esserci con googleId)
-                if (!v) return true; // saltalo, validazione passata se vuoto
-                return /[a-z]/.test(v) &&          // almeno una minuscola
-                    /[A-Z]/.test(v) &&          // almeno una maiuscola
-                    /\d/.test(v) &&             // almeno un numero
-                    /[!@#$%^&*(),.?":{}|<>]/.test(v); // almeno un carattere speciale
+                if (!v) return true;
+                return /[a-z]/.test(v) &&
+                    /[A-Z]/.test(v) &&
+                    /\d/.test(v) &&
+                    /[!@#$%^&*(),.?":{}|<>]/.test(v);
             },
             message: "La password deve contenere almeno una lettera minuscola, una maiuscola, un numero e un carattere speciale."
         }
     },
 
     googleId: {
-        type: String // presente se l’utente si registra via Google
+        type: String
     },
 
     role: {
@@ -47,7 +57,7 @@ const userSchema = new mongoose.Schema({
         default: 'user'
     },
 
-    subscriptionLevel: {
+    planLevel: {
         type: String,
         enum: ['free', 'premium'],
         default: 'free'
@@ -58,7 +68,12 @@ const userSchema = new mongoose.Schema({
         ref: 'Category'
     }]
 
-}, { timestamps: true });
+}, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
+
+// Campo virtuale per nome completo
+userSchema.virtual('fullName').get(function () {
+    return `${this.name} ${this.surname}`;
+});
 
 // Middleware pre-save per hashare la password prima di salvarla
 userSchema.pre('save', async function (next) {

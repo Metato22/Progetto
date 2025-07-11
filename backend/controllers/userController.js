@@ -13,7 +13,7 @@ const getProfile = async (req, res) => {
 };
 
 // ✅ Upgrade del piano di abbonamento
-const upgradeSubscription = async (req, res) => {
+const upgradePlan = async (req, res) => {
     try {
         const { level } = req.body;
         const valid = ['free', 'premium'];
@@ -25,16 +25,16 @@ const upgradeSubscription = async (req, res) => {
         const user = await User.findById(req.userId);
         if (!user) return res.status(404).json({ message: 'Utente non trovato' });
 
-        if (user.subscriptionLevel === level) {
-            return res.status(200).json({ message: 'Sei già a questo livello', subscriptionLevel: level });
+        if (user.planLevel === level) {
+            return res.status(200).json({ message: 'Sei già a questo livello', planLevel: level });
         }
 
-        user.subscriptionLevel = level;
+        user.planLevel = level;
         await user.save();
 
         res.json({
             message: `Abbonamento aggiornato a ${level}`,
-            subscriptionLevel: user.subscriptionLevel
+            planLevel: user.planLevel
         });
     } catch (err) {
         console.error('Errore aggiornamento abbonamento:', err.message);
@@ -42,7 +42,73 @@ const upgradeSubscription = async (req, res) => {
     }
 };
 
+const subscribe = async (req, res) => {
+    console.log('Subscribe endpoint called');
+    console.log('UserId:', req.userId);
+    console.log('Request body:', req.body);
+
+    try {
+        const userId = req.userId;
+        const { categoryId } = req.body;
+
+        if (!userId) {
+            return res.status(401).json({ message: 'Utente non autenticato' });
+        }
+
+        if (!categoryId) {
+            return res.status(400).json({ message: 'categoryId richiesto' });
+        }
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Utente non trovato' });
+        }
+
+        if (!Array.isArray(user.subscribedCategories)) {
+            user.subscribedCategories = [];
+        }
+
+        if (!user.subscribedCategories.includes(categoryId)) {
+            user.subscribedCategories.push(categoryId);
+            await user.save();
+        }
+
+        res.status(200).json({ message: 'Categoria sottoscritta con successo', subscribedCategories: user.subscribedCategories });
+    } catch (err) {
+        console.error('Errore nella sottoscrizione:', err);  // LOG PIÙ DETTAGLIATO
+        res.status(500).json({ message: 'Errore nella sottoscrizione', error: err.message });
+    }
+};
+
+const getSubscriptions = async (req, res) => {
+    try {
+        const user = await User.findById(req.userId).populate('subscribedCategories');
+        res.status(200).json(user.subscribedCategories);
+    } catch (err) {
+        res.status(500).json({ message: 'Errore nel recupero delle sottoscrizioni', error: err.message });
+    }
+};
+
+// POST /api/user/unsubscribe
+const unsubscribe = async (req, res) => {
+    try {
+        const { categoryId } = req.body;
+        const user = await User.findById(req.userId);
+
+        user.subscribedCategories = user.subscribedCategories.filter(id => id.toString() !== categoryId);
+        await user.save();
+
+        res.status(200).json({ message: 'Sottoscrizione rimossa', subscribedCategories: user.subscribedCategories });
+    } catch (err) {
+        res.status(500).json({ message: 'Errore nella rimozione', error: err.message });
+    }
+};
+
 module.exports = {
     getProfile,
-    upgradeSubscription
+    upgradePlan,
+    subscribe,
+    getSubscriptions,
+    unsubscribe
 };

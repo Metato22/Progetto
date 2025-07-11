@@ -48,7 +48,7 @@ router.get('/google/callback',
             {
                 userId: req.user._id,
                 role: req.user.role,
-                subscriptionLevel: req.user.subscriptionLevel
+                planLevel: req.user.planLevel
             },
             process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: '15m' }

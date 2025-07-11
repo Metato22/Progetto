@@ -1,5 +1,6 @@
 const News = require('../models/newsModel');
 const Category = require('../models/categoryModel');
+const User = require('../models/userModel'); // necessario per getPersonalizedNews
 
 // 📰 Ottiene tutte le notizie accessibili all'utente
 const getAllNews = async (req, res) => {
@@ -8,7 +9,7 @@ const getAllNews = async (req, res) => {
         const userLevel = req.userSubscription || 'free';
 
         if (req.query.category) {
-            const category = await Category.findOne({ slug: req.query.category }); // oppure usa name se non hai slug
+            const category = await Category.findOne({ slug: req.query.category });
             if (!category) {
                 return res.status(404).json({ message: 'Categoria non trovata' });
             }
@@ -22,12 +23,14 @@ const getAllNews = async (req, res) => {
             filter.region = req.query.region;
         }
 
+        // Filtra in base al livello d'accesso
         filter.accessLevel = userLevel === 'premium' ? { $in: ['free', 'premium'] } : 'free';
 
         const news = await News.find(filter)
-            .sort({ updatedAt: -1 })
+            .sort({ updatedAt: -1 }) // ordinamento coerente per data di creazione
             .populate('category', 'name')
-            .select('title content imageUrl category region likes dislikes accessLevel createdAt updatedAt')
+            .populate('author')
+            .select('title content imageUrl category region likes dislikes accessLevel createdAt updatedAt author')
             .lean({ virtuals: true });
 
         res.json(news);
@@ -41,13 +44,12 @@ const getAllNews = async (req, res) => {
 const getNewsById = async (req, res) => {
     try {
         const news = await News.findById(req.params.id)
-            .populate('author', 'username')
+            .populate('author')
             .populate('category', 'name')
-            .lean();
+            .lean({ virtuals: true });
 
         if (!news) return res.status(404).json({ message: 'Notizia non trovata' });
 
-        // Controlla livello di accesso
         const userLevel = req.userSubscription || 'free';
         if (news.accessLevel === 'premium' && userLevel !== 'premium') {
             return res.status(403).json({ message: 'Contenuto riservato agli abbonati premium' });
@@ -60,13 +62,46 @@ const getNewsById = async (req, res) => {
     }
 };
 
+// 🔍 Ottieni notizie personalizzate in base alle categorie sottoscritte
+const getPersonalizedNews = async (req, res) => {
+    try {
+        const userId = req.userId;
+
+        // Trova l'utente e prendi le categorie sottoscritte
+        const user = await User.findById(userId).select('subscribedCategories planLevel');
+        if (!user) return res.status(404).json({ message: 'Utente non trovato' });
+
+        const userLevel = user.planLevel || 'free';
+        const subscribedCategories = user.subscribedCategories || [];
+
+        if (subscribedCategories.length === 0) {
+            return res.status(200).json([]); // Nessuna categoria sottoscritta => nessuna notizia
+        }
+
+        const news = await News.find({
+            category: { $in: subscribedCategories },
+            accessLevel: userLevel === 'premium' ? { $in: ['free', 'premium'] } : 'free'
+        })
+            .sort({ updatedAt: -1 })
+            .populate('category', 'name')
+            .populate('author')
+            .select('title content imageUrl category region likes dislikes accessLevel createdAt updatedAt author')
+            .lean({ virtuals: true });
+
+        res.json(news);
+    } catch (err) {
+        console.error('Errore fetch notizie personalizzate:', err.message);
+        res.status(500).json({ message: 'Errore del server' });
+    }
+};
+
 // 🆕 Crea una nuova notizia (solo admin)
 const createNews = async (req, res) => {
     try {
         const { title, content, category, imageUrl, accessLevel } = req.body;
 
-        // Verifica categoria esistente
-        const validCategory = await Category.findOne({ name: category });
+        // Verifica categoria esistente tramite slug o name (adatta a come mandi lato client)
+        const validCategory = await Category.findOne({ slug: category }) || await Category.findOne({ name: category });
         if (!validCategory) return res.status(400).json({ message: 'Categoria non valida' });
 
         const excerpt = content.slice(0, 200) + '...';
@@ -75,14 +110,16 @@ const createNews = async (req, res) => {
             title,
             content,
             excerpt,
-            category,
+            category: validCategory._id, // uso _id della categoria
             imageUrl,
             accessLevel: accessLevel || 'free',
             author: req.userId
         });
 
         await newNews.save();
-        req.io.emit('news-update', newNews);
+
+        // Emissione evento socket
+        if (req.io) req.io.emit('news-update', newNews);
 
         res.status(201).json(newNews);
     } catch (err) {
@@ -94,6 +131,7 @@ const createNews = async (req, res) => {
 // ✏️ Modifica notizia (solo admin)
 const updateNews = async (req, res) => {
     try {
+        // Evita modifiche a campi sensibili
         const forbiddenFields = ['author', 'likes', 'dislikes', 'comments'];
         forbiddenFields.forEach(field => delete req.body[field]);
 
@@ -101,7 +139,7 @@ const updateNews = async (req, res) => {
 
         if (!updated) return res.status(404).json({ message: 'Notizia non trovata' });
 
-        req.io.emit('news-update', updated);
+        if (req.io) req.io.emit('news-update', updated);
         res.json(updated);
     } catch (err) {
         console.error('Errore aggiornamento notizia:', err.message);
@@ -115,7 +153,7 @@ const deleteNews = async (req, res) => {
         const deleted = await News.findByIdAndDelete(req.params.id);
         if (!deleted) return res.status(404).json({ message: 'Notizia non trovata' });
 
-        req.io.emit('news-deleted', { id: req.params.id });
+        if (req.io) req.io.emit('news-deleted', { id: req.params.id });
         res.json({ message: 'Notizia eliminata' });
     } catch (err) {
         console.error('Errore eliminazione notizia:', err.message);
@@ -146,6 +184,7 @@ const dislikeNews = async (req, res) => {
 module.exports = {
     getAllNews,
     getNewsById,
+    getPersonalizedNews,
     createNews,
     updateNews,
     deleteNews,

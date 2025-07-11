@@ -8,7 +8,7 @@ const generateTokens = (user) => {
     const payload = {
         userId: user._id,
         role: user.role,
-        subscriptionLevel: user.subscriptionLevel
+        planLevel: user.planLevel
     };
 
     const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
@@ -20,7 +20,7 @@ const generateTokens = (user) => {
 // ✅ Registrazione utente locale
 exports.registerUser = async (req, res) => {
     try {
-        const { username, email, password, googleId } = req.body;
+        const { name, surname, username, email, password, googleId } = req.body;
 
         // Controllo obbligatorietà password se non è registrazione Google
         if (!password && !googleId) {
@@ -36,14 +36,13 @@ exports.registerUser = async (req, res) => {
         }
 
         // Crea nuovo utente (la password verrà hashata dal pre-save)
-        const newUser = new User({ username, email, password });
+        const newUser = new User({ name, surname, username, email, password });
         if (googleId) {
             newUser.googleId = googleId;
         }
         await newUser.save();
 
         res.status(201).json({ message: "Utente registrato con successo!", userId: newUser._id });
-        console.log("Utente registrato:", newUser);
     } catch (error) {
         console.error("Errore registrazione:", error);
         if (error.name === 'ValidationError') {
@@ -65,22 +64,18 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
-        console.log('Email ricevuta:', email);
-        console.log('Password ricevuta:', password);
         if (!email || !password) {
             return res.status(400).json({ message: "Email e password sono obbligatori." });
         }
 
         // Usa email lowercase per sicurezza
         const user = await User.findOne({ email: email.toLowerCase() });
-        console.log('Utente trovato:', user);
 
         if (!user) {
             return res.status(401).json({ message: "Credenziali non valide." });
         }
 
         const isMatch = await user.comparePassword(password);
-        console.log('Password corretta:', isMatch);
 
         if (!isMatch) {
             return res.status(401).json({ message: "Credenziali non valide." });
@@ -109,7 +104,7 @@ exports.loginUser = async (req, res) => {
                 username: user.username,
                 email: user.email,
                 role: user.role,
-                subscriptionLevel: user.subscriptionLevel
+                planLevel: user.planLevel
             }
         });
     } catch (error) {
@@ -146,7 +141,7 @@ exports.refreshToken = async (req, res) => {
             const newAccessToken = jwt.sign({
                 userId: user._id,
                 role: user.role,
-                subscriptionLevel: user.subscriptionLevel
+                planLevel: user.planLevel
             }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
 
             res.json({ accessToken: newAccessToken });

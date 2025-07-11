@@ -7,7 +7,13 @@ import Item from '../components/Item';
 
 export default function RegisterPage() {
     const nav = useNavigate();
-    const [form, setForm] = useState({ username: '', email: '', password: '' });
+    const [form, setForm] = useState({
+        name: '',
+        surname: '',
+        username: '',
+        email: '',
+        password: ''
+    });
     const [message, setMessage] = useState({ text: '', variant: '' });
     const [passwordFocused, setPasswordFocused] = useState(false);
 
@@ -30,7 +36,6 @@ export default function RegisterPage() {
         }
     };
 
-    // Validazioni password
     const validations = [
         { test: form.password.length >= 8, text: 'Almeno 8 caratteri' },
         { test: /[A-Z]/.test(form.password), text: 'Una lettera maiuscola' },
@@ -47,6 +52,24 @@ export default function RegisterPage() {
                 <h2 className="mb-4">Registrati</h2>
                 {message.text && <Alert variant={message.variant}>{message.text}</Alert>}
                 <Form onSubmit={handleSubmit}>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Nome</Form.Label>
+                        <Form.Control
+                            name="name"
+                            value={form.name}
+                            onChange={handleChange}
+                            required
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Cognome</Form.Label>
+                        <Form.Control
+                            name="surname"
+                            value={form.surname}
+                            onChange={handleChange}
+                            required
+                        />
+                    </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Username</Form.Label>
                         <Form.Control
@@ -90,7 +113,7 @@ export default function RegisterPage() {
                             </ul>
                         )}
                     </Form.Group>
-                    <Button type="submit" variant="light"  className="dark-button">
+                    <Button type="submit" variant="light" className="dark-button">
                         Registrati
                     </Button>
                 </Form>
