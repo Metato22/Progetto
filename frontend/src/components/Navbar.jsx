@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useAuth } from '../auth/useAuth';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from '../api/axiosInstance';
 import ArticleIcon from '@mui/icons-material/Article';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import LoginIcon from '@mui/icons-material/Login';
@@ -11,22 +10,21 @@ import CategoryIcon from '@mui/icons-material/Category';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import PublicIcon from '@mui/icons-material/Public';
 import FlagIcon from '@mui/icons-material/Flag';
+import { useCategories } from '../context/CategoriesContext';  // <-- importa il context
 import '../styles/Navbar.css';
 
 export default function AppNavbar() {
-    const [categories, setCategories] = useState([]);
+    const { categories, fetchCategories } = useCategories();
     const { user, isAdmin, logout } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get('/categories')
-            .then(res => setCategories(res.data))
-            .catch(err => console.error('Errore nel caricamento categorie', err));
+        fetchCategories();
     }, []);
 
     const handleLogout = async () => {
         try {
-            await logout();  // usa logout dal context, che dovrebbe chiamare backend e pulire stato + localStorage
+            await logout();
             navigate('/login');
         } catch (error) {
             console.error('Errore nel logout:', error);
@@ -151,7 +149,7 @@ export default function AppNavbar() {
                                 Categorie
                             </button>
                             <ul className="dropdown-menu">
-                                {categories.length === 0 ? (
+                                {(!categories || categories.length === 0) ? (
                                     <li>
                                         <span className="dropdown-item disabled">Caricamento...</span>
                                     </li>

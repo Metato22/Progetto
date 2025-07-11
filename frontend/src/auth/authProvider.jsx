@@ -11,6 +11,7 @@ export const AuthProvider = ({ children }) => {
         try {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const res = await axios.get('/user/me');
+            console.log(res.data)
             setUser(res.data);
             setLoading(false);
             return true;
@@ -31,10 +32,10 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    const login = (userData, token) => {
+    const login = async (userData, token) => {
         localStorage.setItem('token', token);
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        setUser(userData);
+        await loadUser(token);
     };
 
     const logout = async () => {
@@ -52,6 +53,7 @@ export const AuthProvider = ({ children }) => {
         <AuthContext.Provider
             value={{
                 user,
+                setUser,
                 loading,
                 isAuthenticated: !!user,
                 isAdmin: user?.role === 'admin',

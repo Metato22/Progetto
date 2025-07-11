@@ -6,13 +6,20 @@ import Item from '../components/Item';
 import '../styles/ProfilePage.css'
 
 export default function ProfilePage() {
-    const { user } = useAuth();
+    const { user, setUser } = useAuth();
     const [message, setMessage] = useState('');
+
+    console.log('user in ProfilePage:', user);
 
     const upgrade = async () => {
         try {
             const res = await axios.post('/user/upgrade', { level: 'premium' });
             setMessage(res.data.message);
+            // Aggiorna user con il nuovo planLevel
+            setUser(prevUser => ({
+                ...prevUser,
+                planLevel: res.data.planLevel
+            }));
         } catch (err) {
             setMessage('Errore aggiornamento abbonamento');
         }

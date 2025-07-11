@@ -24,6 +24,7 @@ const externalNewsRoutes = require('./routes/externalNewsRoutes');
 // creazione dell'app con il framework express
 const app = express();
 // express() ritorna un app che è una Function di JavaScript, che deve essere passata ad un server
+app.set('trust proxy', 1); // Necessario per cookie "secure" dietro proxy
 // Node HTTP come callback per gestire le richieste
 const server = http.createServer(app);
 
@@ -49,21 +50,21 @@ io.on('connection', (socket) => {
 //controlliamo dal file delle variabili d'ambiente se è stata specificata una porta diversa dalla 3000
 const PORT = process.env.PORT || 3000;
 
-// Middleware di sessione (richiesto da Passport per Google OAuth)
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'unsegretocasuale',
-    resave: false,
-    saveUninitialized: false
-}));
-
-// Inizializza Passport
-app.use(passport.initialize());
-app.use(passport.session());
-
 // Definiamo i middleware nell'ordine in cui vogliamo vengano eseguiti
 app.use(cors({ // Configurazione CORS
     origin: 'http://localhost:5001', // O l'URL del tuo frontend se diverso, o true per tutti
     credentials: true // Necessario per inviare/ricevere cookie cross-origin
+}));
+
+// Middleware di sessione (richiesto da Passport per Google OAuth)
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'unsegretocasuale',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false, // TRUE solo in produzione con HTTPS
+        sameSite: 'lax'
+    }
 }));
 
 app.use(express.json()); // Per parsare il body delle richieste JSON

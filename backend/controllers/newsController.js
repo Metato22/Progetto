@@ -100,9 +100,10 @@ const createNews = async (req, res) => {
     try {
         const { title, content, category, imageUrl, accessLevel } = req.body;
 
-        // Verifica categoria esistente tramite slug o name (adatta a come mandi lato client)
-        const validCategory = await Category.findOne({ slug: category }) || await Category.findOne({ name: category });
+        // Verifica categoria esistente tramite id
+        const validCategory = await Category.findById(category);
         if (!validCategory) return res.status(400).json({ message: 'Categoria non valida' });
+
 
         const excerpt = content.slice(0, 200) + '...';
 

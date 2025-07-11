@@ -1,26 +1,33 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/userModel'); // Necessario per caricare l'utente se serve
 
-// Middleware per verificare l'Access Token JWT
+// Middleware per verificare il JWT da header *o* cookie
 const verifyAccessToken = (req, res, next) => {
+    // 1. Prima cerca in Authorization header
+    let token = null;
     const authHeader = req.headers.authorization || req.headers.Authorization;
 
-    if (!authHeader?.startsWith('Bearer ')) {
-        return res.status(401).json({ message: 'Non autorizzato: Token mancante o malformato' });
+    if (authHeader?.startsWith('Bearer ')) {
+        token = authHeader.split(' ')[1];
     }
 
-    const token = authHeader.split(' ')[1]; // Prende il token dopo "Bearer "
+    // 2. Se non trovato, prova dal cookie
+    if (!token && req.cookies?.access_token) {
+        token = req.cookies.access_token;
+    }
 
+    if (!token) {
+        return res.status(401).json({ message: 'Non autorizzato: Token mancante' });
+    }
+
+    // 3. Verifica JWT
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if (err) {
-            // Se il token è scaduto, err.name sarà 'TokenExpiredError'
-            // Altri errori possono essere 'JsonWebTokenError' per token non validi
             console.error('Errore verifica JWT:', err.name, err.message);
             return res.status(403).json({ message: 'Proibito: Token non valido o scaduto' });
         }
-        // Il token è valido, aggiungi l'ID dell'utente e il ruolo (se presente nel token) alla richiesta
-        req.userId = decoded.userId; // Assicurati che il payload del token contenga userId
-        req.userRole = decoded.role; // Se hai un ruolo nel token
+
+        req.userId = decoded.userId;
+        req.userRole = decoded.role;
         req.planLevel = decoded.planLevel || 'free';
         next();
     });

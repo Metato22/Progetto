@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from '../api/axiosInstance';
 import { Container, Form, Button, Alert, Table, Modal } from 'react-bootstrap';
 import Item from '../components/Item';
+import { useCategories } from '../context/CategoriesContext';
 
 const regions = ['Italia', 'Mondo'];
 const gnewsCategories = [
@@ -10,7 +11,7 @@ const gnewsCategories = [
 ];
 
 export default function AdminPanel() {
-    const [categories, setCategories] = useState([]);
+    const { categories, fetchCategories } = useCategories(); // categorie da context
     const [news, setNews] = useState([]);
     const [message, setMessage] = useState('');
 
@@ -35,19 +36,23 @@ export default function AdminPanel() {
         region: 'Mondo',
     });
 
-    const fetchAll = async () => {
-        const [cats, newsData] = await Promise.all([
-            axios.get('/categories'),
-            axios.get('/news'),
-        ]);
-        setCategories(cats.data);
-        setNews(newsData.data);
+    // fetch news (rimane locale)
+    const fetchNews = async () => {
+        try {
+            const newsData = await axios.get('/news');
+            setNews(newsData.data);
+        } catch (err) {
+            setMessage('Errore caricamento notizie');
+        }
     };
 
+    // inizializza categories (dal context) e news (locale)
     useEffect(() => {
-        fetchAll();
+        fetchCategories();
+        fetchNews();
     }, []);
 
+    // crea o aggiorna categoria tramite API e aggiorna context
     const createOrUpdateCategory = async () => {
         try {
             if (editingCategory) {
@@ -60,17 +65,23 @@ export default function AdminPanel() {
             setFormCategory({ name: '', description: '', gnewsCategory: 'general' });
             setEditingCategory(null);
             setCategoryModalShow(false);
-            fetchAll();
+            fetchCategories();
         } catch (err) {
             setMessage('Errore con la categoria: ' + (err.response?.data?.message || err.message));
         }
     };
 
+    // elimina categoria e aggiorna context
     const deleteCategory = async (id) => {
-        await axios.delete(`/categories/${id}`);
-        fetchAll();
+        try {
+            await axios.delete(`/categories/${id}`);
+            fetchCategories();
+        } catch {
+            setMessage('Errore eliminazione categoria');
+        }
     };
 
+    // crea o aggiorna notizia localmente
     const createOrUpdateNews = async () => {
         try {
             if (editingNews) {
@@ -88,17 +99,24 @@ export default function AdminPanel() {
             });
             setNewsModalShow(false);
             setEditingNews(null);
-            fetchAll();
-        } catch {
-            alert('Errore salvataggio notizia');
+            fetchNews();
+        } catch(err) {
+            const errMsg = err.response?.data?.message || err.message || 'Errore salvataggio notizia';
+            alert(errMsg);
         }
     };
 
+    // elimina notizia e aggiorna stato locale
     const deleteNews = async (id) => {
-        await axios.delete(`/news/${id}`);
-        fetchAll();
+        try {
+            await axios.delete(`/news/${id}`);
+            fetchNews();
+        } catch {
+            setMessage('Errore eliminazione notizia');
+        }
     };
 
+    // apre modale modifica categoria
     const openEditCategory = (cat) => {
         setFormCategory({
             name: cat.name,
@@ -109,6 +127,7 @@ export default function AdminPanel() {
         setCategoryModalShow(true);
     };
 
+    // apre modale modifica notizia
     const openEditNews = (item) => {
         setFormNews({
             title: item.title,
@@ -284,7 +303,7 @@ export default function AdminPanel() {
                                 />
                             </Form.Group>
                             <Form.Group className="mb-2">
-                                <Form.Label className="text-dark">Accesso</Form.Label>
+                                <Form.Label className="text-dark">Access Level</Form.Label>
                                 <Form.Select
                                     value={formNews.accessLevel}
                                     onChange={(e) => setFormNews(f => ({ ...f, accessLevel: e.target.value }))}
@@ -299,8 +318,8 @@ export default function AdminPanel() {
                                     value={formNews.category}
                                     onChange={(e) => setFormNews(f => ({ ...f, category: e.target.value }))}
                                 >
-                                    <option value="">-- seleziona --</option>
-                                    {categories.map((c) => (
+                                    <option value="">-- Seleziona Categoria --</option>
+                                    {categories.map(c => (
                                         <option key={c._id} value={c._id}>{c.name}</option>
                                     ))}
                                 </Form.Select>
@@ -311,8 +330,7 @@ export default function AdminPanel() {
                                     value={formNews.region}
                                     onChange={(e) => setFormNews(f => ({ ...f, region: e.target.value }))}
                                 >
-                                    <option value="">-- seleziona regione --</option>
-                                    {regions.map((r) => (
+                                    {regions.map(r => (
                                         <option key={r} value={r}>{r}</option>
                                     ))}
                                 </Form.Select>

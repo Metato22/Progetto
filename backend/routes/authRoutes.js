@@ -39,24 +39,9 @@ router.get('/google',
 // 🔁 Callback dopo autenticazione Google
 router.get('/google/callback',
     passport.authenticate('google', {
-        session: false,               // non usiamo sessioni permanenti
-        failureRedirect: '/login'     // se fallisce, redirect a /login (o pagina frontend)
+        failureRedirect: `${process.env.FRONTEND_URL}/login`
     }),
-    (req, res) => {
-        // ✅ Genera il tuo JWT interno dopo che Google ha autenticato
-        const token = jwt.sign(
-            {
-                userId: req.user._id,
-                role: req.user.role,
-                planLevel: req.user.planLevel
-            },
-            process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: '15m' }
-        );
-
-        // 🔁 Reindirizza al frontend React passando il token come parametro URL
-        res.redirect(`http://localhost:3000/auth/google/success?token=${token}`);
-    }
+    authController.handleGoogleLogin
 );
 
 module.exports = router;

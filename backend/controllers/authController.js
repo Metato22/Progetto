@@ -178,3 +178,42 @@ exports.logoutUser = async (req, res) => {
         res.status(500).json({ message: "Errore del server durante il logout." });
     }
 };
+
+// ✅ Login tramite Google (dopo successo Passport)
+exports.handleGoogleLogin = async (req, res) => {
+    console.log("✅ Utente autenticato da Google:", req.user);
+    try {
+        const user = req.user;
+
+        if (!user) {
+            return res.status(401).json({ message: "Utente non autenticato tramite Google." });
+        }
+
+        const { accessToken, refreshToken } = generateTokens(user);
+
+        // Salva il refresh token nel DB
+        await RefreshToken.create({ token: refreshToken, userId: user._id });
+
+        // Invia refresh token come cookie httpOnly
+        res.cookie('jwt', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // 🔥 cambio fondamentale
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+
+        // Invia anche access token come cookie httpOnly (opzionale)
+        res.cookie('access_token', accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // meglio coerenza
+            maxAge: 15 * 60 * 1000
+        });
+
+        const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5001';
+        res.redirect(`${FRONTEND_URL}/auth/google/success`);
+    } catch (error) {
+        console.error("Errore login Google:", error);
+        res.status(500).json({ message: "Errore del server durante il login con Google." });
+    }
+};

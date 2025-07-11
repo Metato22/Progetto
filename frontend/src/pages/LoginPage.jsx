@@ -60,7 +60,9 @@ export default function LoginPage() {
                 <Button
                     variant="outline-light"
                     className="google-button mt-3"
-                    onClick={() => window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`}
+                    onClick={() => {
+                        window.location.href = `${process.env.REACT_APP_API_BASE_URL}/auth/google`;
+                    }}
                 >
                     <GoogleIcon style={{ marginRight: 8, color: 'white' }} />
                     Accedi con Google
