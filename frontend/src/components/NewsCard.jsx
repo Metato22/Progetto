@@ -22,7 +22,7 @@ export function NewsCard({ data }) {
     };
 
     return (
-        <div className="card border-secondary mb-3 bg-dark text-white">
+        <div className="card mb-3 bg-dark text-white">
             <div className="row g-0">
                 <div className="col-md-4">
                     <img

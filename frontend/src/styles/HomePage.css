@@ -36,9 +36,12 @@ body {
     border-radius: 0.5rem;
     padding: 0;
     overflow: hidden;
+    background-color: #121212;
 }
 
-.container-fluid {
+.container-fluid1 {
+    padding: 0 2.5rem;
+    border-radius: 1rem;
 
-    padding: 0 5rem;
 }
+

@@ -108,7 +108,7 @@ export default function HomePage() {
     );
 
     return (
-        <div className="container-fluid">
+        <div className="container-fluid1">
             {/* Titolo principale */}
             <h1 className="section-title1 mb-4">ULTIME NOTIZIE</h1>
 
