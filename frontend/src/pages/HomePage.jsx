@@ -108,48 +108,69 @@ export default function HomePage() {
     );
 
     return (
-        <Container>
-            <h2 className="section-title0">ULTIME NOTIZIE</h2>
-            {loading ? (
-                <Spinner animation="border" />
-            ) : (
-                <Box sx={{ width: '100%', marginTop: '50px', padding: '20px' }}>
-                    <Grid container rowSpacing={0.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                        <Grid item xs={12} md={8}>
-                            <Item style={{ maxWidth: '650px', margin: '0 auto' }}>
-                                <h1 className="section-title">Notizie principali</h1>
-                                <Grid container spacing={2}>
-                                    {combinedNews.map((news) => (
-                                        <Grid item xs={12} key={news._id ?? news.title}>
-                                            <NewsCard data={news} />
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                            </Item>
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                            <Item>
-                                <Box sx={{ width: '100%' }}>
-                                    <h1 className="section-title">Scelti per te</h1>
-                                    {isAuthenticated ? (
-                                        combinedPersonalizedNews.length > 0 ? (
-                                            combinedPersonalizedNews.map((news) => (
-                                                <SecondNewsCard key={news._id ?? news.title} news={news} />
-                                            ))
-                                        ) : (
-                                            <p className="text-white">Nessuna notizia personalizzata disponibile.</p>
-                                        )
-                                    ) : (
-                                        <p style={{ padding: '10px', color: 'white' }}>
-                                            Per vedere contenuti personalizzati, <strong><a href="/login">accedi</a></strong> o <strong><a href="/register">registrati</a></strong>.
-                                        </p>
-                                    )}
-                                </Box>
-                            </Item>
-                        </Grid>
-                    </Grid>
-                </Box>
-            )}
-        </Container>
+        <div className="container-fluid1">
+            {/* Titolo principale */}
+            <h1 className="section-title1 mb-4">ULTIME NOTIZIE</h1>
+
+            <div className="row g-3">
+                {/* Colonna principale (8/12) */}
+                <div className="col-lg-8">
+                    <div className="card bg-dark text-white border-0 mb-3">
+                        <div className="card-body">
+                            <div className="w-100">
+                                {/* Sezione Notizie principali */}
+                                <h2 className="section-title mb-3">Notizie principali</h2>
+
+                                {loading ? (
+                                    <div className="text-center py-4">
+                                        <div className="spinner-border text-light" role="status">
+                                            <span className="visually-hidden">Loading...</span>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="row g-2">
+                                        {combinedNews.map((news) => (
+                                            <div className="col-12" key={news.id ?? news.title}>
+                                                <NewsCard data={news} className="mb-3" />
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Sidebar (4/12) */}
+                <div className="col-lg-4">
+                    <div className="card bg-dark text-white border-0">
+                        <div className="card-body">
+                            <h2 className="section-title mb-3">Scelti per te</h2>
+
+                            {isAuthenticated ? (
+                                combinedPersonalizedNews.length > 0 ? (
+                                    combinedPersonalizedNews.map((news) => (
+                                        <SecondNewsCard
+                                            key={news._id ?? news.title}
+                                            news={news}
+                                            className="mb-3"
+                                        />
+                                    ))
+                                ) : (
+                                    <p className="text-white-50">Nessuna notizia personalizzata disponibile.</p>
+                                )
+                            ) : (
+                                <p className="text-white-50 p-2">
+                                    Per vedere contenuti personalizzati, {' '}
+                                    <a href="/login" className="text-decoration-none fw-bold text-white">accedi</a>{' '}
+                                    o {' '}
+                                    <a href="/register" className="text-decoration-none fw-bold text-white">registrati</a>.
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }
