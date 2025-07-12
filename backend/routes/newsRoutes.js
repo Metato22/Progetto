@@ -5,13 +5,13 @@ const router = express.Router();
 const newsController = require('../controllers/newsController');
 
 // Middleware per protezione delle rotte
-const { verifyAccessToken, verifyRole } = require('../middlewares/authMiddleware');
+const { verifyAccessToken, optionalAuth, verifyRole } = require('../middlewares/authMiddleware');
 
 // Rotta per ottenere tutte le notizie (anteprima)
 router.get('/', newsController.getAllNews);
 
 // Rotta per ottenere una singola notizia completa
-router.get('/item/:id', newsController.getNewsById);
+router.get('/item/:id',optionalAuth, newsController.getNewsById);
 
 // Rotta per ottenere notizie manuali personalizzate (utente autenticato)
 router.get(

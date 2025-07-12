@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const accessToken = localStorage.getItem('token');
+        console.log('Token recuperato da localStorage:', accessToken); // 🔍
         if (accessToken) {
             axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
             loadUser();

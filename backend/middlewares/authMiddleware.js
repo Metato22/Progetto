@@ -33,6 +33,30 @@ const verifyAccessToken = (req, res, next) => {
     });
 };
 
+const optionalAuth = (req, res, next) => {
+    let token = null;
+    const authHeader = req.headers.authorization || req.headers.Authorization;
+
+    if (authHeader?.startsWith('Bearer ')) {
+        token = authHeader.split(' ')[1];
+    }
+
+    if (!token && req.cookies?.access_token) {
+        token = req.cookies.access_token;
+    }
+
+    if (!token) return next();
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+        if (!err && decoded) {
+            req.userId = decoded.userId;
+            req.userRole = decoded.role;
+            req.planLevel = decoded.planLevel || 'free';
+        }
+        next(); // Vai avanti comunque, anche se il token non è valido
+    });
+};
+
 // Middleware per verificare un ruolo specifico (se necessario)
 const verifyRole = (allowedRoles) => {
     return (req, res, next) => {
@@ -43,4 +67,4 @@ const verifyRole = (allowedRoles) => {
     };
 };
 
-module.exports = { verifyAccessToken, verifyRole };
+module.exports = { verifyAccessToken, optionalAuth, verifyRole };

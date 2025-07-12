@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as React from "react";
 import { Chip, Alert } from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
@@ -12,15 +12,23 @@ export default function SecondNewsCard({ news }) {
     const isExternal = !news._id;
     const { user, isAuthenticated } = useAuth();
     const [showWarning, setShowWarning] = useState(false);
+    const navigate = useNavigate();
 
     const linkTarget = isExternal ? news.url : `/news/${news._id}`;
     const linkProps = isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {};
 
     const handleClick = (e) => {
-        if (news.isPremium && (!isAuthenticated || user.level === 'free')) {
-            e.preventDefault(); // blocca il redirect
+        if (news.accessLevel === 'premium' && (!isAuthenticated || user.planLevel === 'free')) {
             setShowWarning(true);
             setTimeout(() => setShowWarning(false), 3000);
+            return;
+        }
+
+        if (isExternal) {
+            // Comportamento identico a <a target="_blank" rel="noopener noreferrer">
+            window.open(news.url, '_blank', 'noopener,noreferrer');
+        } else {
+            navigate(`/news/${news._id}`);
         }
     };
 
@@ -35,7 +43,7 @@ export default function SecondNewsCard({ news }) {
                 <div className="d-flex justify-content-between align-items-center mb-2">
                     <Card.Title style={{ fontSize: '1rem' }}>
                         {news.title}{' '}
-                        {news.isPremium && (
+                        {news.accessLevel === 'premium' && (
                             <Chip
                                 label="Premium"
                                 size="small"
@@ -58,9 +66,9 @@ export default function SecondNewsCard({ news }) {
                     {news.description + '...' || news.excerpt + '...' || ''}
                 </p>
 
-                <Link to={linkTarget} className="btn-custom-dark" {...linkProps} onClick={handleClick}>
+                <button className="btn-custom-dark" onClick={handleClick}>
                     Leggi tutto
-                </Link>
+                </button>
 
                 <p className="card-text mt-2 mb-0">
                     <small className="text-muted">

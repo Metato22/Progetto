@@ -20,7 +20,7 @@ export default function LoginPage() {
         try {
             const res = await axios.post('/auth/login', { email, password: pwd });
             // Usa la funzione login per aggiornare il context e salvare il token
-            login(res.data.user, res.data.accessToken);
+            login(res.data.accessToken);
             nav('/');
         } catch (err) {
             console.error("Errore login:", err.response?.data || err.message);
