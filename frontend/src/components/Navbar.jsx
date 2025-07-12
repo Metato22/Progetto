@@ -39,13 +39,14 @@ export default function AppNavbar() {
                         <h1 className="m-0 display-5 fw-bold">
                             <ArticleIcon
                                 fontSize="small"
+                                font="georgia"
                                 className="me-2"
                                 style={{
                                     transform: 'translateY(-0.8px)',
                                     fontSize: '1.1rem'
                                 }}
                             />
-                            NowTrends
+                            ClickNews
                         </h1>
                     </Link>
 
