@@ -42,6 +42,7 @@ export default function AdminPanel() {
             const newsData = await axios.get('/news');
             setNews(newsData.data);
         } catch (err) {
+            console.error('Errore fetchNews:', err);
             setMessage('Errore caricamento notizie');
         }
     };

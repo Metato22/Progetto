@@ -1,20 +1,15 @@
+// HomePage.jsx
 import { useEffect, useState } from 'react';
 import axios from '../api/axiosInstance';
 import { NewsCard } from '../components/NewsCard';
 import SecondNewsCard from '../components/SecondNewsCard';
 import '../styles/HomePage.css';
-import { Container, Spinner } from 'react-bootstrap';
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import * as React from "react";
-import Item from '../components/Item';
-import io from 'socket.io-client';
-import { useAuth } from '../auth/useAuth'; // <-- IMPORTA useAuth
-
-const socket = io(process.env.REACT_APP_API_BASE_URL);
+import { useAuth } from '../auth/useAuth';
+import { useSocket } from '../context/SocketContext';
 
 export default function HomePage() {
-    const { isAuthenticated } = useAuth(); // <-- USA useAuth
+    const { isAuthenticated } = useAuth();
+    const socket = useSocket(); // <-- USA useSocket()
 
     const [apiNews, setApiNews] = useState([]);
     const [manualNews, setManualNews] = useState([]);
@@ -77,24 +72,32 @@ export default function HomePage() {
         };
 
         fetchAllNews();
+    }, [isAuthenticated]);
 
-        socket.on('news-update', (newNews) => {
-            setManualNews(prev => {
+    useEffect(() => {
+        if (!socket) return;
+
+        const handleNewsUpdate = (newNews) => {
+            setManualNews((prev) => {
                 if (prev.some(n => n._id === newNews._id)) {
                     return prev;
                 }
                 return [newNews, ...prev];
             });
-        });
+        };
 
-        socket.on('news-deleted', ({ id }) => {
-            setManualNews(prev => prev.filter(n => n._id !== id));
-        });
+        const handleNewsDeleted = ({ id }) => {
+            setManualNews((prev) => prev.filter(n => n._id !== id));
+        };
+
+        socket.on('news-update', handleNewsUpdate);
+        socket.on('news-deleted', handleNewsDeleted);
 
         return () => {
-            socket.disconnect();
+            socket.off('news-update', handleNewsUpdate);
+            socket.off('news-deleted', handleNewsDeleted);
         };
-    }, [isAuthenticated]);
+    }, [socket]);
 
     const combinedNews = [...manualNews, ...apiNews].filter((news, index, self) =>
             index === self.findIndex(n =>
@@ -109,39 +112,33 @@ export default function HomePage() {
 
     return (
         <div className="container-fluid1">
-            {/* Titolo principale */}
             <h1 className="section-title1 mb-4">ULTIME NOTIZIE</h1>
 
             <div className="row g-3">
-                {/* Colonna principale (8/12) */}
                 <div className="col-lg-8">
                     <div className="card text-white border-0 mb-3">
                         <div className="card-body">
-                            <div className="w-100">
-                                {/* Sezione Notizie principali */}
-                                <h2 className="section-title mb-3">Notizie principali</h2>
+                            <h2 className="section-title mb-3">Notizie principali</h2>
 
-                                {loading ? (
-                                    <div className="text-center py-4">
-                                        <div className="spinner-border text-light" role="status">
-                                            <span className="visually-hidden">Loading...</span>
+                            {loading ? (
+                                <div className="text-center py-4">
+                                    <div className="spinner-border text-light" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="row g-2">
+                                    {combinedNews.map((news) => (
+                                        <div className="col-12" key={news.id ?? news.title}>
+                                            <NewsCard data={news} className="mb-3" />
                                         </div>
-                                    </div>
-                                ) : (
-                                    <div className="row g-2">
-                                        {combinedNews.map((news) => (
-                                            <div className="col-12" key={news.id ?? news.title}>
-                                                <NewsCard data={news} className="mb-3" />
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
 
-                {/* Sidebar (4/12) */}
                 <div className="col-lg-4">
                     <div className="card text-white border-0">
                         <div className="card-body">

@@ -8,8 +8,11 @@ import Box from "@mui/material/Box";
 import * as React from "react";
 import Item from '../components/Item';
 import '../styles/PagesStyles.css';
+import { useSocket } from '../context/SocketContext'; // Importa useSocket
 
 export default function Italia() {
+    const socket = useSocket();
+
     const [manualNews, setManualNews] = useState([]);
     const [externalNews, setExternalNews] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -19,7 +22,7 @@ export default function Italia() {
             try {
                 const [manualRes, externalRes] = await Promise.all([
                     axios.get('/news?region=Italia'),
-                    axios.get('/external-news?gnewsCountry=it&gnewsCategory=nation') // <-- filtro esterno
+                    axios.get('/external-news?gnewsCountry=it&gnewsCategory=nation')
                 ]);
 
                 setManualNews(manualRes.data || []);
@@ -36,7 +39,33 @@ export default function Italia() {
         fetchAllNews();
     }, []);
 
-    // Unione e deduplicazione (se serve)
+    // Gestione aggiornamenti socket in tempo reale (solo news manuali)
+    useEffect(() => {
+        if (!socket) return;
+
+        const handleNewsUpdate = (newNews) => {
+            if (newNews.region === 'Italia') {
+                setManualNews(prev => {
+                    if (prev.some(n => n._id === newNews._id)) return prev;
+                    return [newNews, ...prev];
+                });
+            }
+        };
+
+        const handleNewsDeleted = ({ id }) => {
+            setManualNews(prev => prev.filter(n => n._id !== id));
+        };
+
+        socket.on('news-update', handleNewsUpdate);
+        socket.on('news-deleted', handleNewsDeleted);
+
+        return () => {
+            socket.off('news-update', handleNewsUpdate);
+            socket.off('news-deleted', handleNewsDeleted);
+        };
+    }, [socket]);
+
+    // Unione e deduplicazione
     const combinedNews = [...manualNews, ...externalNews].filter(
         (news, index, self) =>
             index === self.findIndex(n =>

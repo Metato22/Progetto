@@ -45,7 +45,7 @@ axiosInstance.interceptors.response.use(
 
             return new Promise((resolve, reject) => {
                 axiosInstance
-                    .get('/refresh-token') // endpoint backend per refresh token
+                    .post('/auth/refresh') // endpoint backend per refresh token
                     .then(({ data }) => {
                         const newToken = data.accessToken;
                         axiosInstance.defaults.headers.common['Authorization'] = 'Bearer ' + newToken;
