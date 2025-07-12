@@ -34,55 +34,33 @@ export default function AppNavbar() {
     return (
         <div className="sticky-top bg-white">
             <nav className="navbar navbar-expand-lg px-4 py-3 border-bottom">
-                <div className="container-fluid">
-                    <Link to="/" className="navbar-brand">
-                        <h1 className="m-0 display-5 fw-bold">
+                <div className="container-fluid d-flex justify-content-center">
+                    <Link to="/" className="navbar-brand mx-auto">
+                        <h1 className="m-0 fw-bold text-center" style={{
+                            fontSize: '2.5rem',       // Aumentato da display-5 (1.25rem)
+                            lineHeight: '1.2',
+                            display: 'flex',
+                            alignItems: 'center',
+                           fontFamily: 'Futura, sans-serif'
+                        }}>
                             <ArticleIcon
-                                fontSize="small"
-                                font="georgia"
-                                className="me-2"
                                 style={{
-                                    transform: 'translateY(-0.8px)',
-                                    fontSize: '1.1rem'
+                                    fontSize: '3rem',     // Aumentato da 1.1rem
+                                    marginRight: '0.75rem',
+                                    transform: 'translateY(-1px)'
                                 }}
                             />
                             ClickNews
                         </h1>
                     </Link>
 
-                    <div className="mx-auto" style={{ width: '40%' }}>
-                        <form className="d-flex">
-                            <input
-                                className="form-control"
-                                type="search"
-                                placeholder="Search"
-                                aria-label="Search"
-                            />
-                            <button className="btn btn-outline-dark ms-2" type="submit">
-                                Search
-                            </button>
-                        </form>
-                    </div>
 
-                    <div className="d-flex">
-                        <Link to="/contacts" className="btn btn-outline-dark">
-                            <ContactPageIcon
-                                fontSize="small"
-                                className="me-2"
-                                style={{
-                                    transform: 'translateY(-0.8px)',
-                                    fontSize: '1.1rem'
-                                }}
-                            />
-                            Contacts
-                        </Link>
-                    </div>
 
                     <div className="d-flex">
                         {user ? (
                             <div className="dropdown">
                                 <button
-                                    className="btn btn-outline-light rounded-circle d-flex align-items-center justify-content-center"
+                                    className="btn btn-outline-dark rounded-circle d-flex align-items-center justify-content-center"
                                     type="button"
                                     id="userMenuButton"
                                     data-bs-toggle="dropdown"
