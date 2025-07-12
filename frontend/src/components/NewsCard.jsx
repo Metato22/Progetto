@@ -22,7 +22,7 @@ export function NewsCard({ data }) {
     };
 
     return (
-        <div className="card mb-3 bg-dark text-white">
+        <div className="card1 mb-3 text-white">
             <div className="row g-0">
                 <div className="col-md-4">
                     <img
@@ -32,9 +32,9 @@ export function NewsCard({ data }) {
                     />
                 </div>
                 <div className="col-md-8">
-                    <div className="card-body">
+                    <div className="card1-body">
                         <div className="d-flex justify-content-between align-items-center">
-                            <h5 className="card-title">
+                            <h5 className="card1-title">
                                 {data.title}{' '}
                                 {data.isPremium && (
                                     <Chip
@@ -55,7 +55,7 @@ export function NewsCard({ data }) {
                             />
                         </div>
 
-                        <p className="card-text">
+                        <p className="card1-text">
                             {data.description + '...' || data.excerpt + '...' || ''}
                         </p>
 
@@ -69,7 +69,7 @@ export function NewsCard({ data }) {
                             Leggi tutto
                         </Link>
 
-                        <p className="card-text mt-2 mb-0">
+                        <p className="card1-text mt-2 mb-0">
                             <small className="text-muted">
                                 Autore:{' '}
                                 {isExternal
@@ -78,7 +78,7 @@ export function NewsCard({ data }) {
                             </small>
                         </p>
 
-                        <p className="card-text mb-0">
+                        <p className="card1-text mb-0">
                             <small className="text-body-secondary">
                                 Ultima modifica:{' '}
                                 {new Date(

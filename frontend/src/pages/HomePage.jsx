@@ -115,7 +115,7 @@ export default function HomePage() {
             <div className="row g-3">
                 {/* Colonna principale (8/12) */}
                 <div className="col-lg-8">
-                    <div className="card bg-dark text-white border-0 mb-3">
+                    <div className="card text-white border-0 mb-3">
                         <div className="card-body">
                             <div className="w-100">
                                 {/* Sezione Notizie principali */}
@@ -143,7 +143,7 @@ export default function HomePage() {
 
                 {/* Sidebar (4/12) */}
                 <div className="col-lg-4">
-                    <div className="card bg-dark text-white border-0">
+                    <div className="card text-white border-0">
                         <div className="card-body">
                             <h2 className="section-title mb-3">Scelti per te</h2>
 

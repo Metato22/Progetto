@@ -57,14 +57,14 @@ export default function AppNavbar() {
                                 placeholder="Search"
                                 aria-label="Search"
                             />
-                            <button className="btn btn-outline-light ms-2" type="submit">
+                            <button className="btn btn-outline-dark ms-2" type="submit">
                                 Search
                             </button>
                         </form>
                     </div>
 
                     <div className="d-flex">
-                        <Link to="/contacts" className="btn btn-outline-light">
+                        <Link to="/contacts" className="btn btn-outline-dark">
                             <ContactPageIcon
                                 fontSize="small"
                                 className="me-2"
@@ -106,7 +106,7 @@ export default function AppNavbar() {
                                 </ul>
                             </div>
                         ) : (
-                            <Link to="/login" className="btn btn-outline-light">
+                            <Link to="/login" className="btn btn-outline-dark">
                                 <LoginIcon
                                     fontSize="small"
                                     className="me-2"

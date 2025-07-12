@@ -2,7 +2,7 @@
 .navbar-brand h1 {
     font-size: 1.5rem;
     letter-spacing: -1px;
-    color: white;
+    color: black;
 }
 
 /* Pulsanti categoria */
@@ -12,7 +12,7 @@
 
     border: none;
     background: transparent;
-    color: white;
+    color: black !important;
     font-weight: 500;
     text-decoration: none;
     white-space: nowrap;
@@ -38,11 +38,11 @@
 
 .navbar{
     border: none;
-    background-color: #121212;
+    background-color: blanchedalmond;
 }
 
 .navbar {
-    background-color: #121212;
+    background-color: rgba(255, 255, 255, 0.9);
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
@@ -50,6 +50,3 @@
     padding: 0.5rem;
 }
 
-.container-fluid{
-    background-color: #121212;
-}
