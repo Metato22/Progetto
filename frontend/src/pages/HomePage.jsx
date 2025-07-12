@@ -108,18 +108,18 @@ export default function HomePage() {
     );
 
     return (
-        <div className="container-fluid1">
+        <div className="container-fluid2 py-5">
             {/* Titolo principale */}
-            <h1 className="section-title1 mb-4">ULTIME NOTIZIE</h1>
 
-            <div className="row g-3">
+
+            <div className="row g-4">
                 {/* Colonna principale (8/12) */}
                 <div className="col-lg-8">
                     <div className="card text-white border-0 mb-3">
                         <div className="card-body">
                             <div className="w-100">
                                 {/* Sezione Notizie principali */}
-                                <h2 className="section-title mb-3">Notizie principali</h2>
+                                <h2 className="section-title mb-3">Ultim'ora</h2>
 
                                 {loading ? (
                                     <div className="text-center py-4">
@@ -128,7 +128,7 @@ export default function HomePage() {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="row g-2">
+                                    <div className="row g-4">
                                         {combinedNews.map((news) => (
                                             <div className="col-12" key={news.id ?? news.title}>
                                                 <NewsCard data={news} className="mb-3" />

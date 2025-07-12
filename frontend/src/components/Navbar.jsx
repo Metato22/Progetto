@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useAuth } from '../auth/useAuth';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Link, useNavigate } from 'react-router-dom';
 import ArticleIcon from '@mui/icons-material/Article';
@@ -36,16 +37,10 @@ export default function AppNavbar() {
             <nav className="navbar navbar-expand-lg px-4 py-3 border-bottom">
                 <div className="container-fluid d-flex justify-content-center">
                     <Link to="/" className="navbar-brand mx-auto">
-                        <h1 className="m-0 fw-bold text-center" style={{
-                            fontSize: '2.5rem',       // Aumentato da display-5 (1.25rem)
-                            lineHeight: '1.2',
-                            display: 'flex',
-                            alignItems: 'center',
-                           fontFamily: 'Futura, sans-serif'
-                        }}>
-                            <ArticleIcon
+                        <h1 className="brand-title m-0 fw-bold text-center">
+                            <ArticleIcon classname='brand-icon'
                                 style={{
-                                    fontSize: '3rem',     // Aumentato da 1.1rem
+                                    fontSize: '3rem',
                                     marginRight: '0.75rem',
                                     transform: 'translateY(-1px)'
                                 }}
@@ -53,7 +48,6 @@ export default function AppNavbar() {
                             ClickNews
                         </h1>
                     </Link>
-
 
 
                     <div className="d-flex">
@@ -65,9 +59,9 @@ export default function AppNavbar() {
                                     id="userMenuButton"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
-                                    style={{ width: '40px', height: '40px' }}
+                                    style={{width: '40px', height: '40px'}}
                                 >
-                                    <AccountCircleIcon />
+                                    <AccountCircleIcon/>
                                 </button>
                                 <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
                                     <li>
@@ -78,7 +72,9 @@ export default function AppNavbar() {
                                             <Link className="dropdown-item" to="/admin">Admin Panel</Link>
                                         </li>
                                     )}
-                                    <li><hr className="dropdown-divider" /></li>
+                                    <li>
+                                        <hr className="dropdown-divider"/>
+                                    </li>
                                     <li>
                                         <button className="dropdown-item" onClick={handleLogout}>Logout</button>
                                     </li>
@@ -101,7 +97,7 @@ export default function AppNavbar() {
                 </div>
             </nav>
 
-            <div className="container-fluid border-bottom py-2">
+            <div className="container-fluid border-top border-bottom bottom-5 border-dark py-2">
                 <div className="row g-0">
                     <div className="col-12 d-flex justify-content-center">
                         <Link to="/" className="category-btn">
@@ -177,7 +173,7 @@ export default function AppNavbar() {
                                     fontSize: '1.1rem'
                                 }}
                             />
-                            Dal Mondo
+                            Dal mondo
                         </Link>
                     </div>
                 </div>

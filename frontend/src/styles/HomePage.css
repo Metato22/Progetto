@@ -1,7 +1,7 @@
 .section-title1 {
     color: black !important;
-    font-family: 'Roboto', sans-serif;
-    font-size: 2rem;
+    font-family: Cambria !important;
+    font-size: 2.5rem !important;
     font-weight: 600;
     padding-left: 15px;
     margin-top: 20px;
@@ -9,7 +9,8 @@
 
 .section-title {
     color: black !important;
-    font-size: 1.5rem;
+    font-family: 'Castellar' !important;
+    font-size: 1.5rem !important;
     font-weight: 600;
     margin-left: 10px;
     margin-bottom: 1rem;
@@ -43,5 +44,12 @@ body {
 .container-fluid1 {
     padding: 0 2.5rem;
     border-radius: 1rem;
+
+}
+
+.container-fluid2 {
+    border-radius: 1rem !important;
+    padding-left: 150px !important;
+    padding-right: 150px !important;
 }
 
