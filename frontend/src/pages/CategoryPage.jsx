@@ -118,7 +118,7 @@ export default function CategoryPage() {
             <Box sx={{ width: '100%', marginTop: '50px', padding: '20px' }}>
                 <Grid container rowSpacing={0.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                     <Grid item xs={12}>
-                        <Item>
+                        <Item sx={{backgroundColor: 'white'}}>
                             <div className="header-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <h1 className="section-title" style={{ color: 'white' }}>
                                     {category ? category.name : 'Categoria'}
