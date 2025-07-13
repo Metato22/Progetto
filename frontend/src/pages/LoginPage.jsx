@@ -31,7 +31,7 @@ export default function LoginPage() {
     return (
         <Container className="w-50">
             <Item>
-                <h2 className="mb-4">Login</h2>
+                <h2 className="login-title">Login</h2>
                 {error && <Alert variant="danger">{error}</Alert>}
                 <Form onSubmit={handle}>
                     <Form.Group className="mb-3">

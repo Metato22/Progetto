@@ -62,7 +62,9 @@ export function NewsCard({ data }) {
                         </div>
 
                         <p className="card1-text">
-                            {data.description + '...' || data.excerpt + '...' || ''}
+                            {data.description && data.description.trim()
+                                ? data.description + '...'
+                                : data.excerpt || ''}
                         </p>
 
                         <button

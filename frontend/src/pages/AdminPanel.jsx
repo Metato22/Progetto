@@ -3,6 +3,7 @@ import axios from '../api/axiosInstance';
 import { Container, Form, Button, Alert, Table, Modal } from 'react-bootstrap';
 import Item from '../components/Item';
 import { useCategories } from '../context/CategoriesContext';
+import '../styles/AdminPage.css'
 
 const regions = ['Italia', 'Mondo'];
 const gnewsCategories = [
@@ -145,7 +146,7 @@ export default function AdminPanel() {
     return (
         <Container>
             <Item>
-                <h2 className="mb-4">Admin Panel</h2>
+                <h2 className="admin-title">Admin Panel</h2>
 
                 <div className="d-flex justify-content-between align-items-center mt-4">
                     <h4 className="text-white">Categorie</h4>

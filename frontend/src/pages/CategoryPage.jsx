@@ -142,7 +142,7 @@ export default function CategoryPage() {
                     <Grid item xs={12}>
                         <Item>
                             <div className="header-container d-flex justify-content-between align-items-center">
-                                <h1 className="section-title text-white">
+                                <h1 className="category-title">
                                     {category ? category.name : 'Categoria'}
                                 </h1>
                                 {isAuthenticated && category && (

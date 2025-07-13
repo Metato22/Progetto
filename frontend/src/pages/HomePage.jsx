@@ -144,7 +144,7 @@ export default function HomePage() {
 
                 {/* Sidebar (4/12) */}
                 <div className="col-lg-4">
-                    <div className="card text-white border-0">
+                    <div className="card border-0">
                         <div className="card-body">
                             <h2 className="section-title mb-3">Scelti per te</h2>
 
@@ -158,14 +158,14 @@ export default function HomePage() {
                                         />
                                     ))
                                 ) : (
-                                    <p className="text-white-50">Nessuna notizia personalizzata disponibile.</p>
+                                    <p className="text-black-50">Nessuna notizia personalizzata disponibile.</p>
                                 )
                             ) : (
-                                <p className="text-white-50 p-2">
+                                <p className="text-black-50 p-2">
                                     Per vedere contenuti personalizzati, {' '}
-                                    <a href="/login" className="text-decoration-none fw-bold text-white">accedi</a>{' '}
+                                    <a href="/login" className="text-decoration-none fw-bold ">accedi</a>{' '}
                                     o {' '}
-                                    <a href="/register" className="text-decoration-none fw-bold text-white">registrati</a>.
+                                    <a href="/register" className="text-decoration-none fw-bold ">registrati</a>.
                                 </p>
                             )}
                         </div>

@@ -8,7 +8,7 @@ export const SocketProvider = ({ children }) => {
     const socketRef = useRef(null);
 
     useEffect(() => {
-        const socket = io(process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000', {
+        const socket = io(process.env.REACT_APP_API_BASE_URL?.replace('/api', '') || 'http://localhost:3000/', {
             transports: ['websocket'],
             withCredentials: true
         });

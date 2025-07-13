@@ -29,14 +29,15 @@
     border-radius: 8px;
 }
 
-.section-title {
+.category-title {
     padding-bottom: 3px;
     margin-left: 27px;
     margin-top: 15px;
     text-align: left;
-    font-size: 2rem;
     font-weight: 600;
     margin-bottom: 1.5rem;
-    color: blanchedalmond;
+    color: white;
+    font-family: 'Castellar';
+    font-size: 1.5rem;
 }
 

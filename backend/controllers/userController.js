@@ -42,6 +42,7 @@ const upgradePlan = async (req, res) => {
     }
 };
 
+// ✅ Sottoscrizione a una categoria
 const subscribe = async (req, res) => {
     console.log('Subscribe endpoint called');
     console.log('UserId:', req.userId);
@@ -60,7 +61,6 @@ const subscribe = async (req, res) => {
         }
 
         const user = await User.findById(userId);
-
         if (!user) {
             return res.status(404).json({ message: 'Utente non trovato' });
         }
@@ -74,13 +74,26 @@ const subscribe = async (req, res) => {
             await user.save();
         }
 
-        res.status(200).json({ message: 'Categoria sottoscritta con successo', subscribedCategories: user.subscribedCategories });
+        // 🔔 Emit al frontend (notifica aggiornamento)
+        if (req.io) {
+            req.io.emit('subscription-updated', {
+                userId,
+                categoryId,
+                action: 'subscribe'
+            });
+        }
+
+        res.status(200).json({
+            message: 'Categoria sottoscritta con successo',
+            subscribedCategories: user.subscribedCategories
+        });
     } catch (err) {
-        console.error('Errore nella sottoscrizione:', err);  // LOG PIÙ DETTAGLIATO
+        console.error('Errore nella sottoscrizione:', err);
         res.status(500).json({ message: 'Errore nella sottoscrizione', error: err.message });
     }
 };
 
+// ✅ Recupero sottoscrizioni
 const getSubscriptions = async (req, res) => {
     try {
         const user = await User.findById(req.userId).populate('subscribedCategories');
@@ -90,22 +103,36 @@ const getSubscriptions = async (req, res) => {
     }
 };
 
-// POST /api/user/unsubscribe
+// ✅ Rimozione sottoscrizione
 const unsubscribe = async (req, res) => {
     try {
         const { categoryId } = req.body;
         const user = await User.findById(req.userId);
 
-        user.subscribedCategories = user.subscribedCategories.filter(id => id.toString() !== categoryId);
+        user.subscribedCategories = user.subscribedCategories.filter(
+            id => id.toString() !== categoryId
+        );
         await user.save();
 
-        res.status(200).json({ message: 'Sottoscrizione rimossa', subscribedCategories: user.subscribedCategories });
+        // 🔔 Emit al frontend (notifica aggiornamento)
+        if (req.io) {
+            req.io.emit('subscription-updated', {
+                userId: req.userId,
+                categoryId,
+                action: 'unsubscribe'
+            });
+        }
+
+        res.status(200).json({
+            message: 'Sottoscrizione rimossa',
+            subscribedCategories: user.subscribedCategories
+        });
     } catch (err) {
         res.status(500).json({ message: 'Errore nella rimozione', error: err.message });
     }
 };
 
-// PATCH /api/user/complete-profile
+// ✅ Completamento profilo
 const completeProfile = async (req, res) => {
     try {
         const userId = req.userId;
@@ -116,19 +143,16 @@ const completeProfile = async (req, res) => {
         }
 
         const user = await User.findById(userId);
-
         if (!user) {
             return res.status(404).json({ message: "Utente non trovato." });
         }
 
-        // Se già compilato, potresti decidere se bloccare o sovrascrivere
         if (user.name && user.surname) {
             return res.status(400).json({ message: "Profilo già completo." });
         }
 
         user.name = name;
         user.surname = surname;
-
         await user.save();
 
         res.status(200).json({ message: "Profilo aggiornato con successo.", user });

@@ -4,7 +4,7 @@ const Comment = require('../models/commentModel');
 exports.commentNews = async (req, res) => {
     try {
         const { text } = req.body;
-        const newsId = req.params.id;
+        const newsId = req.params.newsId;
 
         if (!text || text.trim().length === 0) {
             return res.status(400).json({ message: 'Il testo del commento è obbligatorio' });
@@ -28,7 +28,7 @@ exports.commentNews = async (req, res) => {
 // Ottiene tutti i commenti per una specifica notizia
 exports.getCommentsByNews = async (req, res) => {
     try {
-        const newsId = req.params.id;
+        const newsId = req.params.newsId;
         const page = parseInt(req.query.page) || 1; // pagina 1 come default
         const limit = parseInt(req.query.limit) || 10;
 
@@ -48,7 +48,7 @@ exports.getCommentsByNews = async (req, res) => {
 // Elimina un commento (solo autore o admin)
 exports.deleteComment = async (req, res) => {
     try {
-        const commentId = req.params.id;
+        const commentId = req.params.newsId;
 
         const comment = await Comment.findById(commentId);
         if (!comment) {

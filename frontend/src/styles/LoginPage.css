@@ -1,3 +1,15 @@
+.login-title {
+    padding-bottom: 3px;
+    margin-left: 27px;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: white;
+    font-family: 'Castellar';
+    font-size: 1.5rem;
+}
+
 .login-link-container {
     color: white;
 }
