@@ -85,9 +85,6 @@ app.get('/', (req, res) => {
 });
 
 // Gestione di rotte non trovate (404)
-/*app.use('*', (req, res) => {
-    res.status(404).json({ message: 'Endpoint non trovato' });
-});*/
 app.use((req, res) => {
     res.status(404).json({ message: 'Endpoint non trovato' });
 });

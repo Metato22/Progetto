@@ -2,11 +2,10 @@ const News = require('../models/newsModel');
 const Category = require('../models/categoryModel');
 const User = require('../models/userModel'); // necessario per getPersonalizedNews
 
-// 📰 Ottiene tutte le notizie accessibili all'utente
+// 📰 Ottiene tutte le notizie accessibili all'utente (senza filtro su accessLevel)
 const getAllNews = async (req, res) => {
     try {
         const filter = {};
-        const userLevel = req.userSubscription || 'free';
 
         if (req.query.category) {
             const category = await Category.findOne({ slug: req.query.category });
@@ -23,8 +22,7 @@ const getAllNews = async (req, res) => {
             filter.region = req.query.region;
         }
 
-        // Filtra in base al livello d'accesso
-        filter.accessLevel = userLevel === 'premium' ? { $in: ['free', 'premium'] } : 'free';
+        // Rimosso filtro accessLevel per mostrare tutte le notizie
 
         const news = await News.find(filter)
             .sort({ updatedAt: -1 }) // ordinamento coerente per data di creazione
@@ -40,7 +38,7 @@ const getAllNews = async (req, res) => {
     }
 };
 
-// 📄 Ottieni una singola notizia completa
+// 📄 Ottieni una singola notizia completa (controllo accessLevel mantenuto)
 const getNewsById = async (req, res) => {
     try {
         const news = await News.findById(req.params.id)
@@ -50,7 +48,7 @@ const getNewsById = async (req, res) => {
 
         if (!news) return res.status(404).json({ message: 'Notizia non trovata' });
 
-        const userLevel = req.userSubscription || 'free';
+        const userLevel = req.planLevel || 'free';
         if (news.accessLevel === 'premium' && userLevel !== 'premium') {
             return res.status(403).json({ message: 'Contenuto riservato agli abbonati premium' });
         }
@@ -62,7 +60,7 @@ const getNewsById = async (req, res) => {
     }
 };
 
-// 🔍 Ottieni notizie personalizzate in base alle categorie sottoscritte
+// 🔍 Ottieni notizie personalizzate in base alle categorie sottoscritte (senza filtro accessLevel)
 const getPersonalizedNews = async (req, res) => {
     try {
         const userId = req.userId;
@@ -71,7 +69,6 @@ const getPersonalizedNews = async (req, res) => {
         const user = await User.findById(userId).select('subscribedCategories planLevel');
         if (!user) return res.status(404).json({ message: 'Utente non trovato' });
 
-        const userLevel = user.planLevel || 'free';
         const subscribedCategories = user.subscribedCategories || [];
 
         if (subscribedCategories.length === 0) {
@@ -79,8 +76,7 @@ const getPersonalizedNews = async (req, res) => {
         }
 
         const news = await News.find({
-            category: { $in: subscribedCategories },
-            accessLevel: userLevel === 'premium' ? { $in: ['free', 'premium'] } : 'free'
+            category: { $in: subscribedCategories }
         })
             .sort({ updatedAt: -1 })
             .populate('category', 'name')
@@ -103,7 +99,6 @@ const createNews = async (req, res) => {
         // Verifica categoria esistente tramite id
         const validCategory = await Category.findById(category);
         if (!validCategory) return res.status(400).json({ message: 'Categoria non valida' });
-
 
         const excerpt = content.slice(0, 200) + '...';
 
