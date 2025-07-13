@@ -134,7 +134,7 @@ export default function CategoryPage() {
                                         {isFollowed ? (
                                             <BookmarkIcon style={{ color: 'gold', fontSize: '2rem' }} />
                                         ) : (
-                                            <BookmarkBorderIcon style={{ color: 'white', fontSize: '2rem' }} />
+                                            <BookmarkBorderIcon style={{ color: 'black', fontSize: '2rem' }} />
                                         )}
                                     </button>
                                 )}
