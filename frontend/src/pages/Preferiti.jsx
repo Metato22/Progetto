@@ -81,7 +81,7 @@ export default function Preferiti() {
         <Container>
             <Item>
                 <Box sx={{ width: '100%', marginTop: '50px', padding: '20px' }}>
-                    <h1 className="section-title">CATEGORIE PREFERITE</h1>
+                    <h1 className="category-title">CATEGORIE PREFERITE</h1>
                     <Grid container spacing={2}>
                         {personalizedNews.map(news => (
                             <Grid item xs={12} sm={6} md={4} key={news._id ?? news.title}>

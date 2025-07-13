@@ -49,7 +49,7 @@ export default function RegisterPage() {
     return (
         <Container className="w-50">
             <Item>
-                <h2 className="mb-4">Registrati</h2>
+                <h2 className="register-title">Registrati</h2>
                 {message.text && <Alert variant={message.variant}>{message.text}</Alert>}
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className="mb-3">

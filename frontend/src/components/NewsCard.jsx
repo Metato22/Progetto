@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ArticleIcon from '@mui/icons-material/Article';
 import LanguageIcon from '@mui/icons-material/Language';
 import { Chip, Alert } from '@mui/material';
@@ -14,15 +14,21 @@ export function NewsCard({ data }) {
     const [showWarning, setShowWarning] = useState(false);
 
     const handleClick = (e) => {
-        if (data.isPremium && (!isAuthenticated || user.level === 'free')) {
-            e.preventDefault(); // blocca navigazione
+        if (data.accessLevel === 'premium' && (!isAuthenticated || user.planLevel === 'free')) {
             setShowWarning(true);
-            setTimeout(() => setShowWarning(false), 3000); // nascondi dopo 3s
+            setTimeout(() => setShowWarning(false), 3000);
+            return;
+        }
+
+        if (isExternal) {
+            window.open(data.url, '_blank');
+        } else {
+            navigate(`/news/${data._id}`);
         }
     };
 
     return (
-        <div className="card mb-3 bg-dark text-white">
+        <div className="card1 mb-3 text-white">
             <div className="row g-0">
                 <div className="col-md-4">
                     <img
@@ -32,11 +38,11 @@ export function NewsCard({ data }) {
                     />
                 </div>
                 <div className="col-md-8">
-                    <div className="card-body">
+                    <div className="card1-body">
                         <div className="d-flex justify-content-between align-items-center">
-                            <h5 className="card-title">
+                            <h5 className="card1-title">
                                 {data.title}{' '}
-                                {data.isPremium && (
+                                {data.accessLevel === 'premium' && (
                                     <Chip
                                         label="Premium"
                                         size="small"
@@ -55,21 +61,21 @@ export function NewsCard({ data }) {
                             />
                         </div>
 
-                        <p className="card-text">
-                            {data.description + '...' || data.excerpt + '...' || ''}
+                        <p className="card1-text">
+                            {data.description && data.description.trim()
+                                ? data.description + '...'
+                                : data.excerpt || ''}
                         </p>
 
-                        <Link
-                            to={isExternal ? data.url : `/news/${data._id}`}
+                        <button
                             className="btn-custom-dark"
-                            target={isExternal ? '_blank' : '_self'}
-                            rel="noopener noreferrer"
+                            disabled={showWarning}
                             onClick={handleClick}
                         >
                             Leggi tutto
-                        </Link>
+                        </button>
 
-                        <p className="card-text mt-2 mb-0">
+                        <p className="card1-text mt-2 mb-0">
                             <small className="text-muted">
                                 Autore:{' '}
                                 {isExternal
@@ -78,7 +84,7 @@ export function NewsCard({ data }) {
                             </small>
                         </p>
 
-                        <p className="card-text mb-0">
+                        <p className="card1-text mb-0">
                             <small className="text-body-secondary">
                                 Ultima modifica:{' '}
                                 {new Date(

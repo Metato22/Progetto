@@ -12,3 +12,20 @@
     color: white;
 }
 
+.card1 {
+    background-color: white;
+    position: relative;
+}
+
+.card1-body {
+    background-color: white;
+
+}
+
+.card1-title {
+    color: black !important;
+}
+
+.card1-text {
+    color: black !important;
+}

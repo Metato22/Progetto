@@ -2,20 +2,23 @@ import { useEffect, useState } from 'react';
 import axios from '../api/axiosInstance';
 import { NewsCard } from '../components/NewsCard';
 import '../styles/HomePage.css';
+import '../styles/PagesStyles.css';
+
 import { Container, Spinner } from 'react-bootstrap';
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import * as React from "react";
 import Item from '../components/Item';
+
 import { useParams } from 'react-router-dom';
-import '../styles/PagesStyles.css';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import { useAuth } from '../auth/useAuth';  // Assumendo che il hook sia così importato
+import { useAuth } from '../auth/useAuth';
+import { useSocket } from '../context/SocketContext'; // ✅ Importa useSocket
 
 export default function CategoryPage() {
     const { slug } = useParams();
     const { user, isAuthenticated, loading: authLoading } = useAuth();
+    const socket = useSocket(); // ✅ Usa il socket dal context
 
     const [category, setCategory] = useState(null);
     const [manualNews, setManualNews] = useState([]);
@@ -27,18 +30,17 @@ export default function CategoryPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Ottieni categoria
                 const categoryRes = await axios.get(`/categories/${slug}`);
-                setCategory(categoryRes.data);
+                const catData = categoryRes.data;
+                setCategory(catData);
 
-                // Notizie manuali
-                const manualRes = await axios.get(`/news?category=${slug}`);
+                const [manualRes, externalRes] = await Promise.all([
+                    axios.get(`/news?category=${slug}`),
+                    axios.get(`/external-news?gnewsCategory=${catData.gnewsCategory}`)
+                ]);
+
                 setManualNews(manualRes.data);
-
-                // Notizie esterne
-                const externalRes = await axios.get(`/external-news?gnewsCategory=${categoryRes.data.gnewsCategory}`);
                 setExternalNews(externalRes.data);
-
             } catch (error) {
                 console.error('Errore durante il fetch:', error);
                 setManualNews([]);
@@ -48,12 +50,9 @@ export default function CategoryPage() {
             }
         };
 
-        if (!authLoading) {
-            fetchData();
-        }
+        if (!authLoading) fetchData();
     }, [slug, authLoading]);
 
-    // Controlla se l'utente segue la categoria, solo quando category e autenticazione sono pronti
     useEffect(() => {
         const checkSubscription = async () => {
             if (!isAuthenticated || !category) {
@@ -74,37 +73,52 @@ export default function CategoryPage() {
         checkSubscription();
     }, [category, isAuthenticated]);
 
+    // ✅ Ascolta aggiornamenti real-time tramite il context socket
+    useEffect(() => {
+        if (!socket || !category) return;
+
+        const handleNewsUpdate = (newNews) => {
+            if (newNews.category?.slug === slug) {
+                setManualNews(prev => {
+                    if (prev.some(n => n._id === newNews._id)) return prev;
+                    return [newNews, ...prev];
+                });
+            }
+        };
+
+        const handleNewsDeleted = ({ id }) => {
+            setManualNews(prev => prev.filter(n => n._id !== id));
+        };
+
+        socket.on('news-update', handleNewsUpdate);
+        socket.on('news-deleted', handleNewsDeleted);
+
+        return () => {
+            socket.off('news-update', handleNewsUpdate);
+            socket.off('news-deleted', handleNewsDeleted);
+        };
+    }, [socket, category, slug]);
+
     const handleToggleFollow = async () => {
+        if (!category || toggling) return;
 
         setToggling(true);
 
         try {
             if (isFollowed) {
-                console.log('Trying to unsubscribe from category', category._id);
                 await axios.post('/user/unsubscribe', { categoryId: category._id });
                 setIsFollowed(false);
             } else {
-                console.log('Trying to subscribe to category', category._id);
                 await axios.post('/user/subscribe', { categoryId: category._id });
                 setIsFollowed(true);
             }
         } catch (err) {
-            console.error('Error toggling follow:', err);
+            console.error('Errore durante il toggle:', err);
         } finally {
             setToggling(false);
         }
     };
 
-
-    if (loading) {
-        return (
-            <Container>
-                <Spinner animation="border" />
-            </Container>
-        );
-    }
-
-    // Unisci e rimuovi duplicati per titolo
     const combinedNews = [...manualNews, ...externalNews].filter(
         (news, index, self) =>
             index === self.findIndex(n =>
@@ -113,14 +127,22 @@ export default function CategoryPage() {
             )
     );
 
+    if (loading) {
+        return (
+            <Container className="d-flex justify-content-center align-items-center" style={{ height: '60vh' }}>
+                <Spinner animation="border" />
+            </Container>
+        );
+    }
+
     return (
         <Container>
             <Box sx={{ width: '100%', marginTop: '50px', padding: '20px' }}>
-                <Grid container rowSpacing={0.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        <Item>
-                            <div className="header-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <h1 className="section-title" style={{ color: 'white' }}>
+                        <Item sx={{backgroundColor:'white'}}>
+                            <div className="header-container d-flex justify-content-between align-items-center ">
+                                <h1 className="category-title">
                                     {category ? category.name : 'Categoria'}
                                 </h1>
                                 {isAuthenticated && category && (
@@ -139,6 +161,7 @@ export default function CategoryPage() {
                                     </button>
                                 )}
                             </div>
+
                             <Grid item xs={12}>
                                 {combinedNews.length > 0 ? (
                                     combinedNews.map(n => (

@@ -1,14 +1,16 @@
 .section-title1 {
-    color: white;
-    font-size: 2rem;
+    color: black !important;
+    font-family: Cambria !important;
+    font-size: 2.5rem !important;
     font-weight: 600;
     padding-left: 15px;
     margin-top: 20px;
 }
 
 .section-title {
-    color: white;
-    font-size: 1.5rem;
+    color: black !important;
+    font-family: 'Castellar' !important;
+    font-size: 1.5rem !important;
     font-weight: 600;
     margin-left: 10px;
     margin-bottom: 1rem;
@@ -28,7 +30,7 @@ a:hover {
 
 
 body {
-    background-color: #121212;
+    background-color: midnightblue !important;
 }
 
 
@@ -36,12 +38,18 @@ body {
     border-radius: 0.5rem;
     padding: 0;
     overflow: hidden;
-    background-color: #121212;
+    background-color: white !important;
 }
 
 .container-fluid1 {
     padding: 0 2.5rem;
     border-radius: 1rem;
 
+}
+
+.container-fluid2 {
+    border-radius: 1rem !important;
+    padding-left: 150px !important;
+    padding-right: 150px !important;
 }
 

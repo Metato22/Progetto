@@ -20,7 +20,7 @@ export default function LoginPage() {
         try {
             const res = await axios.post('/auth/login', { email, password: pwd });
             // Usa la funzione login per aggiornare il context e salvare il token
-            login(res.data.user, res.data.accessToken);
+            login(res.data.accessToken);
             nav('/');
         } catch (err) {
             console.error("Errore login:", err.response?.data || err.message);
@@ -31,7 +31,7 @@ export default function LoginPage() {
     return (
         <Container className="w-50">
             <Item>
-                <h2 className="mb-4">Login</h2>
+                <h2 className="login-title">Login</h2>
                 {error && <Alert variant="danger">{error}</Alert>}
                 <Form onSubmit={handle}>
                     <Form.Group className="mb-3">

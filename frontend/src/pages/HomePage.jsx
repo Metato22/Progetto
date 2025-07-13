@@ -3,18 +3,12 @@ import axios from '../api/axiosInstance';
 import { NewsCard } from '../components/NewsCard';
 import SecondNewsCard from '../components/SecondNewsCard';
 import '../styles/HomePage.css';
-import { Container, Spinner } from 'react-bootstrap';
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import * as React from "react";
-import Item from '../components/Item';
-import io from 'socket.io-client';
-import { useAuth } from '../auth/useAuth'; // <-- IMPORTA useAuth
-
-const socket = io(process.env.REACT_APP_API_BASE_URL);
+import { useAuth } from '../auth/useAuth';
+import { useSocket } from '../context/SocketContext'; // <-- Importa useSocket
 
 export default function HomePage() {
-    const { isAuthenticated } = useAuth(); // <-- USA useAuth
+    const { isAuthenticated } = useAuth();
+    const socket = useSocket(); // <-- Usa il socket dal context
 
     const [apiNews, setApiNews] = useState([]);
     const [manualNews, setManualNews] = useState([]);
@@ -77,24 +71,31 @@ export default function HomePage() {
         };
 
         fetchAllNews();
+    }, [isAuthenticated]);
 
-        socket.on('news-update', (newNews) => {
+    // Socket event listeners per aggiornamenti real-time
+    useEffect(() => {
+        if (!socket) return;
+
+        const handleNewsUpdate = (newNews) => {
             setManualNews(prev => {
-                if (prev.some(n => n._id === newNews._id)) {
-                    return prev;
-                }
+                if (prev.some(n => n._id === newNews._id)) return prev;
                 return [newNews, ...prev];
             });
-        });
+        };
 
-        socket.on('news-deleted', ({ id }) => {
+        const handleNewsDeleted = ({ id }) => {
             setManualNews(prev => prev.filter(n => n._id !== id));
-        });
+        };
+
+        socket.on('news-update', handleNewsUpdate);
+        socket.on('news-deleted', handleNewsDeleted);
 
         return () => {
-            socket.disconnect();
+            socket.off('news-update', handleNewsUpdate);
+            socket.off('news-deleted', handleNewsDeleted);
         };
-    }, [isAuthenticated]);
+    }, [socket]);
 
     const combinedNews = [...manualNews, ...apiNews].filter((news, index, self) =>
             index === self.findIndex(n =>
@@ -115,7 +116,7 @@ export default function HomePage() {
             <div className="row g-3">
                 {/* Colonna principale (8/12) */}
                 <div className="col-lg-8">
-                    <div className="card bg-dark text-white border-0 mb-3">
+                    <div className="card text-white border-0 mb-3">
                         <div className="card-body">
                             <div className="w-100">
                                 {/* Sezione Notizie principali */}
@@ -130,7 +131,7 @@ export default function HomePage() {
                                 ) : (
                                     <div className="row g-2">
                                         {combinedNews.map((news) => (
-                                            <div className="col-12" key={news.id ?? news.title}>
+                                            <div className="col-12" key={news._id ?? news.title}>
                                                 <NewsCard data={news} className="mb-3" />
                                             </div>
                                         ))}
@@ -143,7 +144,7 @@ export default function HomePage() {
 
                 {/* Sidebar (4/12) */}
                 <div className="col-lg-4">
-                    <div className="card bg-dark text-white border-0">
+                    <div className="card border-0">
                         <div className="card-body">
                             <h2 className="section-title mb-3">Scelti per te</h2>
 
@@ -157,14 +158,14 @@ export default function HomePage() {
                                         />
                                     ))
                                 ) : (
-                                    <p className="text-white-50">Nessuna notizia personalizzata disponibile.</p>
+                                    <p className="text-black-50">Nessuna notizia personalizzata disponibile.</p>
                                 )
                             ) : (
-                                <p className="text-white-50 p-2">
+                                <p className="text-black-50 p-2">
                                     Per vedere contenuti personalizzati, {' '}
-                                    <a href="/login" className="text-decoration-none fw-bold text-white">accedi</a>{' '}
+                                    <a href="/login" className="text-decoration-none fw-bold ">accedi</a>{' '}
                                     o {' '}
-                                    <a href="/register" className="text-decoration-none fw-bold text-white">registrati</a>.
+                                    <a href="/register" className="text-decoration-none fw-bold ">registrati</a>.
                                 </p>
                             )}
                         </div>

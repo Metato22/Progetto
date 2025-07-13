@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
-import axios from '../api/axiosInstance';
+import axiosInstance from '../api/axiosInstance';
 
 export const AuthContext = createContext();
 
@@ -7,45 +7,45 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const loadUser = async (token) => {
-        try {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            const res = await axios.get('/user/me');
-            console.log(res.data)
-            setUser(res.data);
-            setLoading(false);
-            return true;
-        } catch (err) {
-            setUser(null);
-            delete axios.defaults.headers.common['Authorization'];
-            setLoading(false);
-            return false;
-        }
+    const loadUser = () => {
+        return axiosInstance.get('/user/me')
+            .then(res => {
+                setUser(res.data);
+            })
+            .catch(err => {
+                // NON rimuovere token o header qui: l’interceptor farà tutto
+                console.warn('Errore /user/me:', err.response?.status);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            loadUser(token);
+        const accessToken = localStorage.getItem('token');
+        console.log('Token recuperato da localStorage:', accessToken); // 🔍
+        if (accessToken) {
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+            loadUser();
         } else {
             setLoading(false);
         }
     }, []);
 
-    const login = async (userData, token) => {
-        localStorage.setItem('token', token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        await loadUser(token);
+    const login = async (accessToken) => {
+        localStorage.setItem('token', accessToken);
+        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+        await loadUser();
     };
 
     const logout = async () => {
         try {
-            await axios.post('/logout'); // backend elimina refresh token e cookie
-        } catch (error) {
-            // Ignora errori logout backend
+            await axiosInstance.post('/auth/logout');
+        } catch {
+            // Silenzia errori logout
         }
         localStorage.removeItem('token');
-        delete axios.defaults.headers.common['Authorization'];
+        delete axiosInstance.defaults.headers.common['Authorization'];
         setUser(null);
     };
 
