@@ -12,6 +12,7 @@ const getProfile = async (req, res) => {
     }
 };
 
+
 // ✅ Upgrade del piano di abbonamento
 const upgradePlan = async (req, res) => {
     try {
@@ -44,10 +45,6 @@ const upgradePlan = async (req, res) => {
 
 // ✅ Sottoscrizione a una categoria
 const subscribe = async (req, res) => {
-    console.log('Subscribe endpoint called');
-    console.log('UserId:', req.userId);
-    console.log('Request body:', req.body);
-
     try {
         const userId = req.userId;
         const { categoryId } = req.body;

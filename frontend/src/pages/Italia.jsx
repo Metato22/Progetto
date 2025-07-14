@@ -84,7 +84,7 @@ export default function Italia() {
                         <Grid item xs={12}>
                             <Item sx={{backgroundColor: 'white'}}>
                                 <div className="header-container">
-                                    <h1 className="category-title">Italia</h1>
+                                    <h1 className="section-title">Italia</h1>
                                 </div>
                                 <Grid container spacing={2}>
                                     {combinedNews.length > 0 ? (

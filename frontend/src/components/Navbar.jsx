@@ -35,18 +35,18 @@ export default function AppNavbar() {
         <div className="sticky-top bg-white">
             <nav className="navbar navbar-expand-lg px-4 py-3 border-bottom">
                 <div className="container-fluid">
-                    <Link to="/" className="navbar-brand" >
-                        <h1 className="m-0 display-3 fw-bold text-center">
-                            <ArticleIcon
-                                fontSize="large"
-                                className="me-2"
-                                style={{
-                                    transform: 'translateY(-0.8px)',
-                                }}
-                            />
-                            ClikNews
-                        </h1>
-                    </Link>
+                        <Link to="/" className="navbar-brand mx-auto" >
+                            <h1 className="m-0 display-3 fw-bold text-center">
+                                <ArticleIcon
+                                    fontSize="large"
+                                    className="me-2"
+                                    style={{
+                                        transform: 'translateY(-0.8px)',
+                                    }}
+                                />
+                                ClikNews
+                            </h1>
+                        </Link>
                     <div className="d-flex">
                         {user ? (
                             <div className="dropdown">

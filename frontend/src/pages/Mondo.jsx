@@ -83,7 +83,7 @@ export default function Mondo() {
                         <Grid item xs={12}>
                             <Item sx={{backgroundColor: 'white'}}>
                                 <div className="header-container">
-                                    <h1 className="category-title">Dal Mondo</h1>
+                                    <h1 className="section-title">Dal Mondo</h1>
                                 </div>
                                 <Grid container spacing={2}>
                                     {combinedNews.length > 0 ? (
