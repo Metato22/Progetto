@@ -132,41 +132,10 @@ const unsubscribe = async (req, res) => {
     }
 };
 
-// ✅ Completamento profilo
-const completeProfile = async (req, res) => {
-    try {
-        const userId = req.userId;
-        const { name, surname } = req.body;
-
-        if (!name || !surname) {
-            return res.status(400).json({ message: "Nome e cognome sono obbligatori." });
-        }
-
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: "Utente non trovato." });
-        }
-
-        if (user.name && user.surname) {
-            return res.status(400).json({ message: "Profilo già completo." });
-        }
-
-        user.name = name;
-        user.surname = surname;
-        await user.save();
-
-        res.status(200).json({ message: "Profilo aggiornato con successo.", user });
-    } catch (err) {
-        console.error("Errore completamento profilo:", err);
-        res.status(500).json({ message: "Errore server durante il completamento del profilo." });
-    }
-};
-
 module.exports = {
     getProfile,
     upgradePlan,
     subscribe,
     getSubscriptions,
-    unsubscribe,
-    completeProfile
+    unsubscribe
 };

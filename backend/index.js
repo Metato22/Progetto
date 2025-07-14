@@ -31,7 +31,7 @@ const server = http.createServer(app);
 // Configura Socket.IO con supporto a CORS per il frontend
 const io = new Server(server, {
     cors: {
-        origin: 'http://localhost:5001', // URL del frontend React
+        origin: process.env.FRONTEND_URL || 'http://localhost:5001', // URL del frontend React
         credentials: true                // Necessario per cookie HTTPOnly
     }
 });
@@ -52,7 +52,7 @@ const PORT = process.env.PORT || 3000;
 
 // Definiamo i middleware nell'ordine in cui vogliamo vengano eseguiti
 app.use(cors({ // Configurazione CORS
-    origin: 'http://localhost:5001', // O l'URL del tuo frontend se diverso, o true per tutti
+    origin: process.env.FRONTEND_URL || 'http://localhost:5001', // O l'URL del tuo frontend se diverso, o true per tutti
     credentials: true // Necessario per inviare/ricevere cookie cross-origin
 }));
 
@@ -62,7 +62,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: false, // TRUE solo in produzione con HTTPS
+        secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax'
     }
 }));

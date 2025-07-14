@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DB_CONNECTION_STRING=mongodb+srv://mdimaria:TSE6a6aedJNn1WER@cluster0.zeohkxn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - ACCESS_TOKEN_SECRET=fdb828a74bb40ed90385c98eb39f3a8b36299c1b38a155abf581e4bd01fa598e
+      - REFRESH_TOKEN_SECRET=946e888be9782fe04f0849755947d229572fdff296ea84c7467b4b5f36af1def
+      - GOOGLE_CLIENT_ID=259061089837-alvptmtdvl08abjmaam2999gtntpeohh.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=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
+      - FRONTEND_URL=http://localhost:5001
+      - SESSION_SECRET=6bb20614cee38d56965fadf15b03fadebe73a6ca0aadebcf3dbd3a76d4042a95
+      - GNEWS_API_KEY=43b99fc7d073fe98263a5a0cde4fbb05
+      - NODE_ENV=production
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5001:80"
+    environment:
+      - REACT_APP_API_BASE_URL=/api

@@ -24,6 +24,4 @@ router.get('/subscriptions', verifyAccessToken, userController.getSubscriptions)
 
 router.post('/unsubscribe', verifyAccessToken, userController.unsubscribe);
 
-router.patch('/complete-profile', verifyAccessToken, userController.completeProfile);
-
 module.exports = router;
