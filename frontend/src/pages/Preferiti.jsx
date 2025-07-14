@@ -78,19 +78,26 @@ export default function Preferiti() {
     }
 
     return (
+
         <Container>
-            <Item sx={{backgroundColor: 'white'}}>
-                <Box sx={{ width: '100%', marginTop: '50px', padding: '20px'}}>
-                    <h1 className="category-title">CATEGORIE PREFERITE</h1>
-                    <Grid container spacing={2}>
-                        {personalizedNews.map(news => (
-                            <Grid item xs={12} sm={6} md={4} key={news._id ?? news.title}>
-                                <NewsCard data={news} />
+            <Box sx={{ width: '100%', marginTop: '50px', padding: '20px'}}>
+                <Grid container rowSpacing={0.5} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                    <Grid item xs={12}>
+                         <Item sx={{backgroundColor: 'white'}}>
+                            <div className="header-container">
+                                <h1 className="section-title">CATEGORIE PREFERITE</h1>
+                            </div>
+                            <Grid container spacing={2}>
+                                {personalizedNews.map(news => (
+                                    <Grid item xs={12} sm={6} md={4} key={news._id ?? news.title}>
+                                        <NewsCard data={news} />
+                                    </Grid>
+                                ))}
                             </Grid>
-                        ))}
+                        </Item>
                     </Grid>
-                </Box>
-            </Item>
+                </Grid>
+            </Box>
         </Container>
     );
 }
