@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: backend:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: DB_CONNECTION_STRING
+              value: "mongodb+srv://mdimaria:TSE6a6aedJNn1WER@cluster0.zeohkxn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+            - name: ACCESS_TOKEN_SECRET
+              value: "fdb828a74bb40ed90385c98eb39f3a8b36299c1b38a155abf581e4bd01fa598e"
+            - name: REFRESH_TOKEN_SECRET
+              value: "946e888be9782fe04f0849755947d229572fdff296ea84c7467b4b5f36af1def"
+            - name: GOOGLE_CLIENT_ID
+              value: "259061089837-alvptmtdvl08abjmaam2999gtntpeohh.apps.googleusercontent.com"
+            - name: GOOGLE_CLIENT_SECRET
+              value: "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"
+            - name: FRONTEND_URL
+              value: "http://localhost:5001"
+            - name: SESSION_SECRET
+              value: "6bb20614cee38d56965fadf15b03fadebe73a6ca0aadebcf3dbd3a76d4042a95"
+            - name: GNEWS_API_KEY
+              value: "43b99fc7d073fe98263a5a0cde4fbb05"
+            - name: NODE_ENV
+              value: "development"
