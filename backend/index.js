@@ -50,10 +50,21 @@ io.on('connection', (socket) => {
 //controlliamo dal file delle variabili d'ambiente se è stata specificata una porta diversa dalla 3000
 const PORT = process.env.PORT || 3000;
 
-// Definiamo i middleware nell'ordine in cui vogliamo vengano eseguiti
-app.use(cors({ // Configurazione CORS
-    origin: process.env.FRONTEND_URL || 'http://localhost:5001', // O l'URL del tuo frontend se diverso, o true per tutti
-    credentials: true // Necessario per inviare/ricevere cookie cross-origin
+const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:5001',
+    process.env.FRONTEND_URL
+].filter(Boolean); // Rimuove valori undefined/null
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
 }));
 
 // Middleware di sessione (richiesto da Passport per Google OAuth)
