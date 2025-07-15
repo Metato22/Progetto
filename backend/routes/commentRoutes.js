@@ -9,6 +9,6 @@ router.post('/:newsId', verifyAccessToken, commentController.commentNews);
 // GET /api/comments/:id?page=0&limit=10
 router.get('/:newsId', commentController.getCommentsByNews);
 
-router.delete('/:id', verifyAccessToken, verifyRole('admin'), commentController.deleteComment);
+router.delete('/:id', verifyAccessToken, commentController.deleteComment);
 
 module.exports = router;

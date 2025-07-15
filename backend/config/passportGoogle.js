@@ -35,8 +35,6 @@ module.exports = (passport) => {
                         user.googleId = googleId;
                         await user.save();
                     } else {
-                        // Se non esiste, creo utente nuovo
-                        const isAdmin = email.endsWith('@studenti.poliba.it') || email === 'admin@news.it';
 
                         const name = profile.name?.givenName?.trim();
                         const surname = profile.name?.familyName?.trim();
@@ -47,7 +45,7 @@ module.exports = (passport) => {
                             username: generateUsernameFromEmail(email),
                             email,
                             googleId,
-                            role: isAdmin ? 'admin' : 'user',
+                            role: 'user',
                             planLevel: 'free'
                         });
                         console.log(`🆕 Nuovo utente creato via Google: ${user.username} (${user.role})`);

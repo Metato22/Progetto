@@ -44,18 +44,18 @@ router.delete(
     newsController.deleteNews
 );
 
-// Like di una notizia (utente loggato)
+// Like toggle di una notizia (utente loggato)
 router.post(
     '/:id/like',
     verifyAccessToken,
-    newsController.likeNews
+    newsController.toggleLike
 );
 
-// Dislike di una notizia (utente loggato)
+// Dislike toggle di una notizia (utente loggato)
 router.post(
     '/:id/dislike',
     verifyAccessToken,
-    newsController.dislikeNews
+    newsController.toggleDislike
 );
 
 module.exports = router;

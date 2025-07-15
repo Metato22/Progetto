@@ -48,7 +48,7 @@ exports.getCommentsByNews = async (req, res) => {
 // Elimina un commento (solo autore o admin)
 exports.deleteComment = async (req, res) => {
     try {
-        const commentId = req.params.newsId;
+        const commentId = req.params.id;
 
         const comment = await Comment.findById(commentId);
         if (!comment) {

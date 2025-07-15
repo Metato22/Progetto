@@ -37,9 +37,17 @@ exports.registerUser = async (req, res) => {
 
         // Crea nuovo utente (la password verrà hashata dal pre-save)
         const newUser = new User({ name, surname, username, email, password });
+
+        // Se è registrazione Google
         if (googleId) {
             newUser.googleId = googleId;
         }
+
+        // 👉 Assegna ruolo admin se l'email finisce con @clicknews.it
+        if (email.endsWith('@clicknews.it')) {
+            newUser.role = 'admin';
+        }
+
         await newUser.save();
 
         res.status(201).json({ message: "Utente registrato con successo!", userId: newUser._id });
@@ -181,7 +189,6 @@ exports.logoutUser = async (req, res) => {
 
 // ✅ Login tramite Google (dopo successo Passport)
 exports.handleGoogleLogin = async (req, res) => {
-    console.log("✅ Utente autenticato da Google:", req.user);
     try {
         const user = req.user;
 

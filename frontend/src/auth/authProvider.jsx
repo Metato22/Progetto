@@ -13,7 +13,6 @@ export const AuthProvider = ({ children }) => {
                 setUser(res.data);
             })
             .catch(err => {
-                // NON rimuovere token o header qui: l’interceptor farà tutto
                 console.warn('Errore /user/me:', err.response?.status);
             })
             .finally(() => {
@@ -23,7 +22,6 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const accessToken = localStorage.getItem('token');
-        console.log('Token recuperato da localStorage:', accessToken); // 🔍
         if (accessToken) {
             axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
             loadUser();

@@ -1,4 +1,3 @@
-// src/context/CategoriesContext.js
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from '../api/axiosInstance';
 

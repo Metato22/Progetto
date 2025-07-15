@@ -22,16 +22,19 @@ const getAllNews = async (req, res) => {
             filter.region = req.query.region;
         }
 
-        // Rimosso filtro accessLevel per mostrare tutte le notizie
-
         const news = await News.find(filter)
-            .sort({ updatedAt: -1 }) // ordinamento coerente per data di creazione
+            .sort({ updatedAt: -1 })
             .populate('category', 'name')
             .populate('author')
-            .select('title content imageUrl category region likes dislikes accessLevel createdAt updatedAt author')
             .lean({ virtuals: true });
 
-        res.json(news);
+        const newsWithCounts = news.map(n => ({
+            ...n,
+            likes: n.likedBy?.length || 0,
+            dislikes: n.dislikedBy?.length || 0
+        }));
+
+        res.json(newsWithCounts);
     } catch (err) {
         console.error("Errore nel caricamento delle notizie:", err.message);
         res.status(500).json({ message: "Errore interno del server" });
@@ -53,7 +56,15 @@ const getNewsById = async (req, res) => {
             return res.status(403).json({ message: 'Contenuto riservato agli abbonati premium' });
         }
 
-        res.json(news);
+        res.json({
+            ...news,
+            likes: news.likedBy?.length || 0,
+            dislikes: news.dislikedBy?.length || 0,
+            reactions: {
+                likes: news.likedBy.map(u => u.toString()),
+                dislikes: news.dislikedBy.map(u => u.toString())
+            }
+        });
     } catch (err) {
         console.error("Errore nel recupero della notizia:", err.message);
         res.status(500).json({ message: "Errore del server" });
@@ -64,15 +75,13 @@ const getNewsById = async (req, res) => {
 const getPersonalizedNews = async (req, res) => {
     try {
         const userId = req.userId;
-
-        // Trova l'utente e prendi le categorie sottoscritte
         const user = await User.findById(userId).select('subscribedCategories planLevel');
         if (!user) return res.status(404).json({ message: 'Utente non trovato' });
 
         const subscribedCategories = user.subscribedCategories || [];
 
         if (subscribedCategories.length === 0) {
-            return res.status(200).json([]); // Nessuna categoria sottoscritta => nessuna notizia
+            return res.status(200).json([]);
         }
 
         const news = await News.find({
@@ -81,10 +90,15 @@ const getPersonalizedNews = async (req, res) => {
             .sort({ updatedAt: -1 })
             .populate('category', 'name')
             .populate('author')
-            .select('title content imageUrl category region likes dislikes accessLevel createdAt updatedAt author')
             .lean({ virtuals: true });
 
-        res.json(news);
+        const newsWithCounts = news.map(n => ({
+            ...n,
+            likes: n.likes?.length || 0,
+            dislikes: n.dislikes?.length || 0
+        }));
+
+        res.json(newsWithCounts);
     } catch (err) {
         console.error('Errore fetch notizie personalizzate:', err.message);
         res.status(500).json({ message: 'Errore del server' });
@@ -95,8 +109,6 @@ const getPersonalizedNews = async (req, res) => {
 const createNews = async (req, res) => {
     try {
         const { title, content, category, imageUrl, accessLevel } = req.body;
-
-        // Verifica categoria esistente tramite id
         const validCategory = await Category.findById(category);
         if (!validCategory) return res.status(400).json({ message: 'Categoria non valida' });
 
@@ -106,7 +118,7 @@ const createNews = async (req, res) => {
             title,
             content,
             excerpt,
-            category: validCategory._id, // uso _id della categoria
+            category: validCategory._id,
             imageUrl,
             accessLevel: accessLevel || 'free',
             author: req.userId
@@ -114,7 +126,6 @@ const createNews = async (req, res) => {
 
         await newNews.save();
 
-        // Emissione evento socket
         if (req.io) req.io.emit('news-update', newNews);
 
         res.status(201).json(newNews);
@@ -127,12 +138,10 @@ const createNews = async (req, res) => {
 // ✏️ Modifica notizia (solo admin)
 const updateNews = async (req, res) => {
     try {
-        // Evita modifiche a campi sensibili
         const forbiddenFields = ['author', 'likes', 'dislikes', 'comments'];
         forbiddenFields.forEach(field => delete req.body[field]);
 
         const updated = await News.findByIdAndUpdate(req.params.id, req.body, { new: true });
-
         if (!updated) return res.status(404).json({ message: 'Notizia non trovata' });
 
         if (req.io) req.io.emit('news-update', updated);
@@ -158,22 +167,76 @@ const deleteNews = async (req, res) => {
 };
 
 // 👍 Aggiunge un like
-const likeNews = async (req, res) => {
+const toggleLike = async (req, res) => {
     try {
-        const news = await News.findByIdAndUpdate(req.params.id, { $inc: { likes: 1 } }, { new: true });
-        res.json({ likes: news.likes });
+        const userId = req.userId;
+        const news = await News.findById(req.params.id);
+        if (!news) return res.status(404).json({ message: 'Notizia non trovata' });
+
+        const hasLiked = news.likedBy.includes(userId);
+        const hasDisliked = news.dislikedBy.includes(userId);
+
+        if (hasLiked) {
+            // Rimuovi like
+            news.likedBy.pull(userId);
+        } else {
+            // Aggiungi like
+            news.likedBy.push(userId);
+            if (hasDisliked) {
+                // Rimuovi dislike se presente
+                news.dislikedBy.pull(userId);
+            }
+        }
+
+        await news.save();
+        res.json({
+            likes: news.likedBy.length,
+            dislikes: news.dislikedBy.length,
+            reactions: {
+                likes: news.likedBy.map(u => u.toString()),
+                dislikes: news.dislikedBy.map(u => u.toString())
+            }
+        });
     } catch (err) {
-        res.status(500).json({ message: 'Errore del server' });
+        console.error("Errore toggle like:", err.message);
+        res.status(500).json({ message: "Errore del server" });
     }
 };
 
 // 👎 Aggiunge un dislike
-const dislikeNews = async (req, res) => {
+const toggleDislike = async (req, res) => {
     try {
-        const news = await News.findByIdAndUpdate(req.params.id, { $inc: { dislikes: 1 } }, { new: true });
-        res.json({ dislikes: news.dislikes });
+        const userId = req.userId;
+        const news = await News.findById(req.params.id);
+        if (!news) return res.status(404).json({ message: 'Notizia non trovata' });
+
+        const hasLiked = news.likedBy.includes(userId);
+        const hasDisliked = news.dislikedBy.includes(userId);
+
+        if (hasDisliked) {
+            // Rimuovi dislike
+            news.dislikedBy.pull(userId);
+        } else {
+            // Aggiungi dislike
+            news.dislikedBy.push(userId);
+            if (hasLiked) {
+                // Rimuovi like se presente
+                news.likedBy.pull(userId);
+            }
+        }
+
+        await news.save();
+        res.json({
+            likes: news.likedBy.length,
+            dislikes: news.dislikedBy.length,
+            reactions: {
+                likes: news.likedBy.map(u => u.toString()),
+                dislikes: news.dislikedBy.map(u => u.toString())
+            }
+        });
     } catch (err) {
-        res.status(500).json({ message: 'Errore nel server' });
+        console.error("Errore toggle dislike:", err.message);
+        res.status(500).json({ message: "Errore del server" });
     }
 };
 
@@ -184,6 +247,6 @@ module.exports = {
     createNews,
     updateNews,
     deleteNews,
-    likeNews,
-    dislikeNews
+    toggleLike,
+    toggleDislike
 };
