@@ -36,20 +36,6 @@ const io = new Server(server, {
     }
 });
 
-// Middleware per rendere disponibile `io` in tutti i controller via `req.io`
-app.use((req, res, next) => {
-    req.io = io;
-    next();
-});
-
-// Log di connessione WebSocket per debug
-io.on('connection', (socket) => {
-    console.log(`🟢 Socket connesso: ${socket.id}`);
-});
-
-//controlliamo dal file delle variabili d'ambiente se è stata specificata una porta diversa dalla 3000
-const PORT = process.env.PORT || 3000;
-
 const allowedOrigins = [
     'http://localhost:3000',
     'http://localhost:5001',
@@ -66,6 +52,20 @@ app.use(cors({
     },
     credentials: true
 }));
+
+// Middleware per rendere disponibile `io` in tutti i controller via `req.io`
+app.use((req, res, next) => {
+    req.io = io;
+    next();
+});
+
+// Log di connessione WebSocket per debug
+io.on('connection', (socket) => {
+    console.log(`🟢 Socket connesso: ${socket.id}`);
+});
+
+//controlliamo dal file delle variabili d'ambiente se è stata specificata una porta diversa dalla 3000
+const PORT = process.env.PORT || 3000;
 
 // Middleware di sessione (richiesto da Passport per Google OAuth)
 app.use(session({
