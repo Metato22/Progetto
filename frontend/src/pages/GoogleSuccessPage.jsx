@@ -43,5 +43,5 @@ export default function GoogleSuccessPage() {
 
     if (loading) return <p>Accesso in corso con Google...</p>;
 
-    return null; // o un fallback, o redirect automatico
+    return null;
 }

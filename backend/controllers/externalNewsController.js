@@ -7,7 +7,7 @@ const newsCache = new NodeCache({ stdTTL: 3600 }); // cache TTL 1 ora
 
 const getExternalNews = async (req, res) => {
     try {
-        const gnewsCountry = req.query.gnewsCountry;  // non assegniamo default qui
+        const gnewsCountry = req.query.gnewsCountry;
         const gnewsCategory = req.query.gnewsCategory || 'general';
 
         const cacheKey = `externalNews_${gnewsCountry || 'all'}_${gnewsCategory}`;

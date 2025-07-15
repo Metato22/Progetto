@@ -1,6 +1,6 @@
 const Category = require('../models/categoryModel');
 
-// ✅ Ottieni tutte le categorie
+// Ottieni tutte le categorie
 const getCategories = async (req, res) => {
     try {
         const cats = await Category.find();
@@ -11,7 +11,7 @@ const getCategories = async (req, res) => {
     }
 };
 
-// ✅ Ottieni una categoria per slug
+// Ottieni una categoria per slug
 const getCategoryBySlug = async (req, res) => {
     try {
         const slug = req.params.slug;
@@ -28,7 +28,7 @@ const getCategoryBySlug = async (req, res) => {
     }
 };
 
-// ✅ Crea una nuova categoria (solo admin)
+// Crea una nuova categoria (solo admin)
 const createCategory = async (req, res) => {
     try {
         const { name, description, gnewsCategory } = req.body;
@@ -47,7 +47,7 @@ const createCategory = async (req, res) => {
     }
 };
 
-// ✅ Aggiorna una categoria (solo admin)
+// Aggiorna una categoria (solo admin)
 const updateCategory = async (req, res) => {
     try {
         const { name, description, gnewsCategory } = req.body;
@@ -71,7 +71,7 @@ const updateCategory = async (req, res) => {
     }
 };
 
-// ✅ Elimina una categoria (solo admin)
+// Elimina una categoria (solo admin)
 const deleteCategory = async (req, res) => {
     try {
         const deleted = await Category.findByIdAndDelete(req.params.id);

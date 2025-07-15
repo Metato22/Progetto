@@ -1,6 +1,6 @@
 const User = require('../models/userModel');
 
-// ✅ Profilo utente (senza password)
+// Profilo utente (senza password)
 const getProfile = async (req, res) => {
     try {
         const user = await User.findById(req.userId).select('-password');
@@ -13,7 +13,7 @@ const getProfile = async (req, res) => {
 };
 
 
-// ✅ Upgrade del piano di abbonamento
+// Upgrade del piano di abbonamento
 const upgradePlan = async (req, res) => {
     try {
         const { level } = req.body;
@@ -43,7 +43,7 @@ const upgradePlan = async (req, res) => {
     }
 };
 
-// ✅ Sottoscrizione a una categoria
+// Sottoscrizione a una categoria
 const subscribe = async (req, res) => {
     try {
         const userId = req.userId;
@@ -71,7 +71,7 @@ const subscribe = async (req, res) => {
             await user.save();
         }
 
-        // 🔔 Emit al frontend (notifica aggiornamento)
+        // Emit al frontend (notifica aggiornamento)
         if (req.io) {
             req.io.emit('subscription-updated', {
                 userId,
@@ -90,7 +90,7 @@ const subscribe = async (req, res) => {
     }
 };
 
-// ✅ Recupero sottoscrizioni
+// Recupero sottoscrizioni
 const getSubscriptions = async (req, res) => {
     try {
         const user = await User.findById(req.userId).populate('subscribedCategories');
@@ -100,7 +100,7 @@ const getSubscriptions = async (req, res) => {
     }
 };
 
-// ✅ Rimozione sottoscrizione
+// Rimozione sottoscrizione
 const unsubscribe = async (req, res) => {
     try {
         const { categoryId } = req.body;

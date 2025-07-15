@@ -1,4 +1,3 @@
-// src/components/Item.js
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 

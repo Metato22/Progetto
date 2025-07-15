@@ -1,8 +1,8 @@
 const News = require('../models/newsModel');
 const Category = require('../models/categoryModel');
-const User = require('../models/userModel'); // necessario per getPersonalizedNews
+const User = require('../models/userModel');
 
-// 📰 Ottiene tutte le notizie accessibili all'utente (senza filtro su accessLevel)
+// Ottiene tutte le notizie accessibili all'utente
 const getAllNews = async (req, res) => {
     try {
         const filter = {};
@@ -41,7 +41,7 @@ const getAllNews = async (req, res) => {
     }
 };
 
-// 📄 Ottieni una singola notizia completa (controllo accessLevel mantenuto)
+// Ottieni una singola notizia completa
 const getNewsById = async (req, res) => {
     try {
         const news = await News.findById(req.params.id)
@@ -71,7 +71,7 @@ const getNewsById = async (req, res) => {
     }
 };
 
-// 🔍 Ottieni notizie personalizzate in base alle categorie sottoscritte (senza filtro accessLevel)
+// Ottieni notizie personalizzate in base alle categorie sottoscritte
 const getPersonalizedNews = async (req, res) => {
     try {
         const userId = req.userId;
@@ -105,7 +105,7 @@ const getPersonalizedNews = async (req, res) => {
     }
 };
 
-// 🆕 Crea una nuova notizia (solo admin)
+// Crea una nuova notizia (solo admin)
 const createNews = async (req, res) => {
     try {
         const { title, content, category, imageUrl, accessLevel } = req.body;
@@ -135,7 +135,7 @@ const createNews = async (req, res) => {
     }
 };
 
-// ✏️ Modifica notizia (solo admin)
+// Modifica notizia (solo admin)
 const updateNews = async (req, res) => {
     try {
         const forbiddenFields = ['author', 'likes', 'dislikes', 'comments'];
@@ -152,7 +152,7 @@ const updateNews = async (req, res) => {
     }
 };
 
-// ❌ Elimina notizia (solo admin)
+// Elimina notizia (solo admin)
 const deleteNews = async (req, res) => {
     try {
         const deleted = await News.findByIdAndDelete(req.params.id);
@@ -166,7 +166,7 @@ const deleteNews = async (req, res) => {
     }
 };
 
-// 👍 Aggiunge un like
+// Aggiunge un like
 const toggleLike = async (req, res) => {
     try {
         const userId = req.userId;
@@ -203,7 +203,7 @@ const toggleLike = async (req, res) => {
     }
 };
 
-// 👎 Aggiunge un dislike
+// Aggiunge un dislike
 const toggleDislike = async (req, res) => {
     try {
         const userId = req.userId;

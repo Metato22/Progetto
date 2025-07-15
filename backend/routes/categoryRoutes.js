@@ -7,13 +7,13 @@ const categoryController = require('../controllers/categoryController');
 // Middleware per accesso
 const { verifyAccessToken, verifyRole } = require('../middlewares/authMiddleware');
 
-// ✅ Recupera tutte le categorie
+// Recupera tutte le categorie
 router.get('/', categoryController.getCategories);
 
-// ✅ Recupera una categoria specifica
+// Recupera una categoria specifica
 router.get('/:slug', categoryController.getCategoryBySlug);
 
-// ✅ Crea una nuova categoria (solo admin)
+// Crea una nuova categoria (solo admin)
 router.post(
     '/',
     verifyAccessToken,
@@ -21,7 +21,7 @@ router.post(
     categoryController.createCategory
 );
 
-// ✅ Modifica categoria (admin)
+// Modifica categoria (admin)
 router.put(
     '/:id',
     verifyAccessToken,
@@ -29,7 +29,7 @@ router.put(
     categoryController.updateCategory
 );
 
-// ✅ Elimina categoria (admin)
+// Elimina categoria (admin)
 router.delete(
     '/:id',
     verifyAccessToken,

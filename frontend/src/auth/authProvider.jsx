@@ -39,8 +39,8 @@ export const AuthProvider = ({ children }) => {
     const logout = async () => {
         try {
             await axiosInstance.post('/auth/logout');
-        } catch {
-            // Silenzia errori logout
+        } catch(err) {
+            console.error('Errore durante il logout:', err?.response?.data?.message || err.message);
         }
         localStorage.removeItem('token');
         delete axiosInstance.defaults.headers.common['Authorization'];

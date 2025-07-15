@@ -3,7 +3,7 @@ const User = require('../models/userModel');
 const RefreshToken = require('../models/refreshTokenModel');
 const jwt = require('jsonwebtoken');
 
-// ✅ Funzione helper per generare access e refresh token coerenti con login Google
+// Funzione helper per generare access e refresh token coerenti con login Google
 const generateTokens = (user) => {
     const payload = {
         userId: user._id,
@@ -17,7 +17,7 @@ const generateTokens = (user) => {
     return { accessToken, refreshToken };
 };
 
-// ✅ Registrazione utente locale
+// Registrazione utente locale
 exports.registerUser = async (req, res) => {
     try {
         const { name, surname, username, email, password, googleId } = req.body;
@@ -43,7 +43,7 @@ exports.registerUser = async (req, res) => {
             newUser.googleId = googleId;
         }
 
-        // 👉 Assegna ruolo admin se l'email finisce con @clicknews.it
+        // Assegna ruolo admin se l'email finisce con @clicknews.it
         if (email.endsWith('@clicknews.it')) {
             newUser.role = 'admin';
         }
@@ -68,7 +68,7 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-// ✅ Login utente classico
+// Login utente classico
 exports.loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -89,7 +89,7 @@ exports.loginUser = async (req, res) => {
             return res.status(401).json({ message: "Credenziali non valide." });
         }
 
-        // ✅ Genera access + refresh token con ruolo e abbonamento
+        // Genera access + refresh token con ruolo e abbonamento
         const { accessToken, refreshToken } = generateTokens(user);
 
         // Salva il refresh token nel DB
@@ -121,7 +121,7 @@ exports.loginUser = async (req, res) => {
     }
 };
 
-// ✅ Refresh del token di accesso tramite cookie httpOnly
+// Refresh del token di accesso tramite cookie httpOnly
 exports.refreshToken = async (req, res) => {
     const cookies = req.cookies;
     const refreshTokenFromCookie = cookies?.jwt;
@@ -142,7 +142,7 @@ exports.refreshToken = async (req, res) => {
                 return res.status(403).json({ message: "Proibito: Refresh token non valido." });
             }
 
-            // ✅ Recupera utente per rigenerare access token completo
+            // Recupera utente per rigenerare access token completo
             const user = await User.findById(decoded.userId);
             if (!user) return res.status(404).json({ message: "Utente non trovato." });
 
@@ -160,7 +160,7 @@ exports.refreshToken = async (req, res) => {
     }
 };
 
-// ✅ Logout: elimina il refresh token e il cookie
+// Logout: elimina il refresh token e il cookie
 exports.logoutUser = async (req, res) => {
     const cookies = req.cookies;
     const refreshTokenFromCookie = cookies?.jwt;
@@ -187,7 +187,7 @@ exports.logoutUser = async (req, res) => {
     }
 };
 
-// ✅ Login tramite Google (dopo successo Passport)
+// Login tramite Google (dopo successo Passport)
 exports.handleGoogleLogin = async (req, res) => {
     try {
         const user = req.user;
@@ -205,7 +205,7 @@ exports.handleGoogleLogin = async (req, res) => {
         res.cookie('jwt', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // 🔥 cambio fondamentale
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
@@ -213,7 +213,7 @@ exports.handleGoogleLogin = async (req, res) => {
         res.cookie('access_token', accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // meglio coerenza
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
             maxAge: 15 * 60 * 1000
         });
 

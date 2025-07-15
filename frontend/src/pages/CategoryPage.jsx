@@ -11,11 +11,11 @@ import { useParams } from 'react-router-dom';
 import '../styles/PagesStyles.css';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import { useAuth } from '../auth/useAuth';  // Assumendo che il hook sia così importato
+import { useAuth } from '../auth/useAuth';
 
 export default function CategoryPage() {
     const { slug } = useParams();
-    const { user, isAuthenticated, loading: authLoading } = useAuth();
+    const { isAuthenticated, loading: authLoading } = useAuth();
 
     const [category, setCategory] = useState(null);
     const [manualNews, setManualNews] = useState([]);

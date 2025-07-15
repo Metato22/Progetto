@@ -13,7 +13,7 @@ const { Server } = require('socket.io');
 require('./config/passportGoogle')(passport);
 
 // importiamo i router per gestire le richieste di autenticazione, gestione utenti, notizie,
-// consultazione notizie, gestione categorie
+// consultazione notizie, gestione categorie, gestione commenti
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const newsRoutes = require('./routes/newsRoutes');
@@ -58,7 +58,7 @@ app.use(cors({ // Configurazione CORS
 
 // Middleware di sessione (richiesto da Passport per Google OAuth)
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'unsegretocasuale',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {

@@ -1,19 +1,18 @@
 const express = require('express');
 const router = express.Router();
 
-// ✅ Importa il controller utente
+// Importa il controller utente
 const userController = require('../controllers/userController');
 
-// ✅ Importa il middleware di autenticazione JWT
+// Importa il middleware di autenticazione JWT
 const { verifyAccessToken } = require('../middlewares/authMiddleware');
 
-// ===================================
 // GET /api/user/me
-// ✅ Restituisce il profilo utente autenticato
+// Restituisce il profilo utente autenticato
 router.get('/me', verifyAccessToken, userController.getProfile);
 
 // POST /api/user/upgrade
-// ✅ Simula un upgrade del livello di abbonamento
+// Simula un upgrade del livello di abbonamento
 router.post('/upgrade', verifyAccessToken, userController.upgradePlan);
 
 // POST /api/user/subscribe

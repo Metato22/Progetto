@@ -1,9 +1,8 @@
-// App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './auth/authProvider';
 import { useAuth } from './auth/useAuth';
 import { CategoriesProvider } from './context/CategoriesContext';
-import { SocketProvider } from './context/SocketContext'; // <-- import socket context
+import { SocketProvider } from './context/SocketContext';
 
 import AppNavbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -37,7 +36,7 @@ export default function App() {
     return (
         <Router>
             <AuthProvider>
-                <SocketProvider> {/* <-- socket avvolge tutta l'app */}
+                <SocketProvider>
                     <CategoriesProvider>
                         <div className="App">
                             <AppNavbar />
