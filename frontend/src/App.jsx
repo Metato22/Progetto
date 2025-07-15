@@ -6,6 +6,7 @@ import { CategoriesProvider } from './context/CategoriesContext';
 import { SocketProvider } from './context/SocketContext'; // <-- import socket context
 
 import AppNavbar from './components/Navbar';
+import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import NewsPage from './pages/NewsPage';
 import LoginPage from './pages/LoginPage';
@@ -58,6 +59,7 @@ export default function App() {
                                 </Routes>
                             </header>
                         </div>
+                        <Footer />
                     </CategoriesProvider>
                 </SocketProvider>
             </AuthProvider>

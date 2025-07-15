@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import * as React from "react";
 import Item from '../components/Item';
 import '../styles/PagesStyles.css';
-import { useSocket } from '../context/SocketContext'; // Importa useSocket
+import { useSocket } from '../context/SocketContext';
 
 export default function Italia() {
     const socket = useSocket();

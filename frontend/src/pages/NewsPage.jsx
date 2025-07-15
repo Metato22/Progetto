@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from '../api/axiosInstance';
 import { Container, Spinner } from 'react-bootstrap';
 import { useSocket } from '../context/SocketContext';
+import { Box, Grid, Typography, Button, TextField, Paper } from '@mui/material';
 
 export default function NewsPage() {
     const { id } = useParams();
@@ -10,8 +11,8 @@ export default function NewsPage() {
 
     const [news, setNews] = useState(null);
     const [comments, setComments] = useState([]);
+    const [commentText, setCommentText] = useState('');
 
-    // Fetch iniziale
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -25,11 +26,9 @@ export default function NewsPage() {
                 console.error('Errore nel caricamento iniziale:', err.message);
             }
         };
-
         fetchData();
     }, [id]);
 
-    // Socket.IO listener
     useEffect(() => {
         if (!socket) return;
 
@@ -61,15 +60,11 @@ export default function NewsPage() {
     }, [socket, id]);
 
     const submitComment = async () => {
-        const textArea = document.getElementById('commentBox');
-        const text = textArea.value.trim();
-
-        if (!text) return;
-
+        if (!commentText.trim()) return;
         try {
-            const res = await axios.post(`/comments/${id}`, { text });
+            const res = await axios.post(`/comments/${id}`, { text: commentText });
             setComments(prev => [...prev, res.data]);
-            textArea.value = '';
+            setCommentText('');
         } catch (err) {
             console.error('Errore invio commento:', err.message);
         }
@@ -92,40 +87,46 @@ export default function NewsPage() {
 
     return (
         <Container>
-            <h2>{news.title}</h2>
-            <img src={news.imageUrl} alt="notizia" className="img-fluid mb-3" />
-            <p className="text-muted">
-                Categoria: {news.category?.name} • Autore: {news.author?.username}
-            </p>
-            <p>{news.content}</p>
+            <Box sx={{ width: '100%', marginTop: '50px', padding: '20px', backgroundColor: 'white', color: 'black' }}>
+                <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        <Typography variant="h4" gutterBottom>{news.title}</Typography>
+                        <img src={news.imageUrl} alt="notizia" style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }} />
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                            Categoria: {news.category?.name} • Autore: {news.author?.username}
+                        </Typography>
+                        <Typography variant="body1" sx={{ mt: 2 }}>{news.content}</Typography>
+                        <Box sx={{ mt: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <Button variant="contained" color="success" onClick={() => handleReaction('like')}>👍 Like</Button>
+                            <Button variant="contained" color="error" onClick={() => handleReaction('dislike')}>👎 Dislike</Button>
+                            <Typography variant="body1">👍 {news.likes} / 👎 {news.dislikes}</Typography>
+                        </Box>
+                    </Grid>
 
-            <div className="mt-4 flex items-center gap-3">
-                <button
-                    className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
-                    onClick={() => handleReaction('like')}
-                >
-                    👍 Like
-                </button>
-                <button
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                    onClick={() => handleReaction('dislike')}
-                >
-                    👎 Dislike
-                </button>
-                <span>👍 {news.likes} / 👎 {news.dislikes}</span>
-            </div>
-
-            <hr className="my-4" />
-
-            <h4>Commenti</h4>
-            {comments.map((c) => (
-                <div key={c._id} className="mb-2 border-bottom pb-1">
-                    <strong>{c.user.username}</strong>: {c.text}
-                </div>
-            ))}
-
-            <textarea className="form-control mt-3" id="commentBox" placeholder="Scrivi un commento..." />
-            <button className="btn btn-primary mt-2" onClick={submitComment}>Invia</button>
+                    <Grid item xs={12}>
+                        <Typography variant="h5" gutterBottom>Commenti</Typography>
+                        {comments.map((c) => (
+                            <Paper key={c._id} elevation={2} sx={{ p: 2, mb: 1, backgroundColor: 'white', color: 'black' }}>
+                                <Typography variant="subtitle2">{c.user.username}</Typography>
+                                <Typography variant="body2">{c.text}</Typography>
+                            </Paper>
+                        ))}
+                        <TextField
+                            fullWidth
+                            multiline
+                            rows={3}
+                            variant="outlined"
+                            placeholder="Scrivi un commento..."
+                            value={commentText}
+                            onChange={(e) => setCommentText(e.target.value)}
+                            sx={{ mt: 2, backgroundColor: 'white', color: 'black' }}
+                        />
+                        <Button variant="contained" color="primary" sx={{ mt: 1 }} onClick={submitComment}>
+                            Invia
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Box>
         </Container>
     );
 }

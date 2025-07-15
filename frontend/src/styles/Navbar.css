@@ -8,7 +8,8 @@
 .category-btn {
     padding: 0.5rem 1.5rem;
     margin: 0 3.5rem;
-
+    z-index: 1 !important;
+    position: relative;
     border: none;
     background: transparent;
     color: white;
@@ -28,6 +29,8 @@
 .dropdown-menu {
     min-width: 200px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 2000 !important;
+    position: absolute !important;
 }
 
 .navbar, .category-row {

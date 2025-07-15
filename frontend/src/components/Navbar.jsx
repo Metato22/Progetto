@@ -3,14 +3,13 @@ import { useAuth } from '../auth/useAuth';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Link, useNavigate } from 'react-router-dom';
 import ArticleIcon from '@mui/icons-material/Article';
-import ContactPageIcon from '@mui/icons-material/ContactPage';
 import LoginIcon from '@mui/icons-material/Login';
 import HomeIcon from '@mui/icons-material/Home';
 import CategoryIcon from '@mui/icons-material/Category';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import PublicIcon from '@mui/icons-material/Public';
 import FlagIcon from '@mui/icons-material/Flag';
-import { useCategories } from '../context/CategoriesContext';  // <-- importa il context
+import { useCategories } from '../context/CategoriesContext';
 import '../styles/Navbar.css';
 
 export default function AppNavbar() {
@@ -34,9 +33,9 @@ export default function AppNavbar() {
     return (
         <div className="sticky-top bg-white">
             <nav className="navbar navbar-expand-lg px-4 py-3 border-bottom">
-                <div className="container-fluid">
+            <div className="container-fluid d-flex justify-content-center">
                         <Link to="/" className="navbar-brand mx-auto" >
-                            <h1 className="m-0 display-3 fw-bold text-center">
+                            <h1 className="m-0 fw-bold text-center">
                                 <ArticleIcon
                                     fontSize="large"
                                     className="me-2"
@@ -92,7 +91,7 @@ export default function AppNavbar() {
                 </div>
             </nav>
 
-            <div className="container-fluid border-bottom py-2">
+            <div className="container-fluid border-top border-bottom-5 py-2">
                 <div className="row g-0">
                     <div className="col-12 d-flex justify-content-center">
                         <Link to="/" className="category-btn" style={{position: 'relative', zIndex: 9999, color:'black'}}>
