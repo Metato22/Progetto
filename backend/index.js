@@ -39,7 +39,7 @@ const io = new Server(server, {
 const allowedOrigins = [
     'http://localhost:3000',
     'http://localhost:5001',
-    process.env.FRONTEND_URL
+    'https://clicknews-frontend.onrender.com'
 ].filter(Boolean); // Rimuove valori undefined/null
 
 app.use(cors({
