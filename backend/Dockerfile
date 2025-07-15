@@ -1,18 +1,17 @@
 # Backend Dockerfile
 FROM node:18-alpine
 
-# Imposta cartella di lavoro nel container
 WORKDIR /app
 
-# Copia solo package.json e installa dipendenze (fase ottimizzata)
+# Copia package.json e installa dipendenze
 COPY package*.json ./
 RUN npm install
 
-# Copia il resto del codice
+# Copia il codice
 COPY . .
 
-# Esponi la porta 3000 (quella su cui gira il backend)
+# Porta su cui ascolta Express
 EXPOSE 3000
 
-# Avvia l'app
-CMD ["npm", "start"]
+# Comando di avvio
+CMD ["node", "index.js"]
