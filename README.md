@@ -56,8 +56,8 @@ REACT_APP_API_BASE_URL=http://localhost:3000/api
 ### 2️⃣ Build delle immagini
 Dalla root del progetto:
 ```bash
-docker build -t backend:latest -f backend/
-docker build -t frontend:latest -f frontend/
+docker build -t backend:latest ./backend
+docker build -t frontend:latest ./frontend
 ```
 
 ### 3️⃣ Avvio dei servizi con Kubernetes
