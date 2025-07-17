@@ -48,7 +48,6 @@ module.exports = (passport) => {
                             role: 'user',
                             planLevel: 'free'
                         });
-                        console.log(`🆕 Nuovo utente creato via Google: ${user.username} (${user.role})`);
                     }
                 }
 
