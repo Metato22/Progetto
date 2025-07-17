@@ -112,12 +112,9 @@ const createNews = async (req, res) => {
         const validCategory = await Category.findById(category);
         if (!validCategory) return res.status(400).json({ message: 'Categoria non valida' });
 
-        const excerpt = content.slice(0, 200) + '...';
-
         const newNews = new News({
             title,
             content,
-            excerpt,
             category: validCategory._id,
             imageUrl,
             accessLevel: accessLevel || 'free',

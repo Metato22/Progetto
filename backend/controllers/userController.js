@@ -111,7 +111,7 @@ const unsubscribe = async (req, res) => {
         );
         await user.save();
 
-        // 🔔 Emit al frontend (notifica aggiornamento)
+        // Emit al frontend (notifica aggiornamento)
         if (req.io) {
             req.io.emit('subscription-updated', {
                 userId: req.userId,
