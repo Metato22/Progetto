@@ -43,7 +43,7 @@ export default function AppNavbar() {
                                         transform: 'translateY(-0.8px)',
                                     }}
                                 />
-                                ClikNews
+                                ClickNews
                             </h1>
                         </Link>
                     <div className="d-flex">

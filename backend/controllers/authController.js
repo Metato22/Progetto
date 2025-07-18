@@ -116,7 +116,7 @@ exports.loginUser = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error("Errore login:", error);
+        console.error("Errore lowgin:", error);
         res.status(500).json({ message: "Errore del server durante il login." });
     }
 };
