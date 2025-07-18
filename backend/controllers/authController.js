@@ -209,7 +209,7 @@ exports.handleGoogleLogin = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
 
-        // Invia anche access token come cookie httpOnly (opzionale)
+        // Invia anche access token come cookie httpOnly
         res.cookie('access_token', accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',

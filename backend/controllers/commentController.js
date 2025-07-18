@@ -17,7 +17,7 @@ exports.commentNews = async (req, res) => {
         });
 
         const populatedComment = await newComment.populate('user', 'username');
-        if (req.io) req.io.emit('new-comment', populatedComment); // opzionale
+        if (req.io) req.io.emit('new-comment', populatedComment);
         res.status(201).json(populatedComment);
     } catch (err) {
         console.error('Errore creazione commento:', err.message);
@@ -61,7 +61,7 @@ exports.deleteComment = async (req, res) => {
         }
 
         await Comment.findByIdAndDelete(commentId);
-        if (req.io) req.io.emit('comment-deleted', { id: commentId }); // opzionale socket
+        if (req.io) req.io.emit('comment-deleted', { id: commentId });
         res.json({ message: 'Commento eliminato con successo' });
     } catch (err) {
         console.error('Errore eliminazione commento:', err.message);
